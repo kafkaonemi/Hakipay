@@ -1,9 +1,2372 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Page Title</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haki — India's Payment Fraud Protection Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   DESIGN TOKENS
+================================================================ */
+:root {
+  --ink:     #07090F;
+  --deep:    #0C1428;
+  --navy:    #112250;
+  --blue:    #1A56DB;
+  --lblue:   #3B82F6;
+  --sky:     #93C5FD;
+  --ice:     #EFF6FF;
+  --teal:    #0F766E;
+  --lteal:   #CCFBF1;
+  --emerald: #059669;
+  --lgreen:  #D1FAE5;
+  --red:     #DC2626;
+  --lred:    #FEE2E2;
+  --amber:   #D97706;
+  --lamber:  #FEF3C7;
+  --rose:    #E11D48;
+  --lrose:   #FFE4E6;
+  --white:   #FFFFFF;
+  --off:     #F9FAFB;
+  --gray50:  #F8FAFC;
+  --gray100: #F1F5F9;
+  --gray200: #E2E8F0;
+  --gray400: #94A3B8;
+  --gray600: #475569;
+  --gray700: #334155;
+  --gray900: #0F172A;
+  --sans: "Plus Jakarta Sans", sans-serif;
+  --serif: "Fraunces", serif;
+  --shadow-sm: 0 1px 3px rgba(7,9,15,0.06), 0 1px 2px rgba(7,9,15,0.04);
+  --shadow:    0 4px 16px rgba(7,9,15,0.08), 0 2px 6px rgba(7,9,15,0.04);
+  --shadow-lg: 0 12px 40px rgba(7,9,15,0.12), 0 4px 12px rgba(7,9,15,0.06);
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:var(--sans); color:var(--gray900); background:var(--white); overflow-x:hidden; }
+img { display:block; max-width:100%; }
+a { text-decoration:none; color:inherit; }
+button { cursor:pointer; border:none; font-family:var(--sans); }
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-thumb { background:var(--blue); border-radius:99px; }
+
+/* ================================================================
+   PAGE SYSTEM — hide/show
+================================================================ */
+.page { display:none; }
+.page.active { display:block; animation:fadeUp 0.35s ease both; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes float  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes pulse  { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(.85)} }
+@keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+@keyframes glow   { 0%,100%{box-shadow:0 0 24px rgba(26,86,219,.3)} 50%{box-shadow:0 0 48px rgba(26,86,219,.55)} }
+@keyframes scanline { 0%{top:0} 100%{top:100%} }
+@keyframes countUp { from{opacity:0;transform:scale(.7)} to{opacity:1;transform:scale(1)} }
+
+/* ================================================================
+   GLOBAL NAV
+================================================================ */
+#nav {
+  position:fixed; top:0; left:0; right:0; z-index:900;
+  background:rgba(12,20,40,0.97);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  transition:box-shadow .3s;
+}
+.nav-inner {
+  max-width:1200px; margin:0 auto; padding:0 24px;
+  display:flex; align-items:center; justify-content:space-between; height:62px;
+}
+.nav-logo {
+  display:flex; align-items:center; gap:10px; cursor:pointer;
+}
+.logo-mark {
+  width:36px; height:36px; border-radius:9px;
+  background:linear-gradient(135deg,var(--blue),var(--teal));
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:14px; color:white; letter-spacing:-.5px;
+}
+.logo-name { font-size:19px; font-weight:800; color:white; letter-spacing:-.5px; }
+.logo-name span { color:var(--sky); }
+
+.nav-links { display:flex; align-items:center; gap:4px; }
+.nav-link {
+  padding:7px 13px; border-radius:7px;
+  font-size:13px; font-weight:600; color:rgba(255,255,255,.65);
+  cursor:pointer; transition:all .18s; white-space:nowrap;
+}
+.nav-link:hover { color:white; background:rgba(255,255,255,.09); }
+.nav-link.active { color:var(--sky); }
+.nav-btn {
+  background:var(--blue); color:white;
+  padding:8px 20px; border-radius:8px;
+  font-size:13px; font-weight:700;
+  cursor:pointer; transition:all .18s;
+  box-shadow:0 2px 12px rgba(26,86,219,.35);
+}
+.nav-btn:hover { background:#1647b8; transform:translateY(-1px); }
+
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; }
+.hamburger span { display:block; width:22px; height:2px; background:white; border-radius:2px; transition:.3s; }
+
+/* ================================================================
+   UTILITY CLASSES
+================================================================ */
+.container { max-width:1200px; margin:0 auto; padding:0 24px; }
+.section { padding:96px 0; }
+.section-sm { padding:64px 0; }
+
+.tag {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  padding:5px 13px; border-radius:99px; margin-bottom:16px;
+}
+.tag-blue  { color:var(--blue);    background:var(--ice); }
+.tag-teal  { color:var(--teal);    background:var(--lteal); }
+.tag-rose  { color:var(--rose);    background:var(--lrose); }
+.tag-amber { color:var(--amber);   background:var(--lamber); }
+.tag-green { color:var(--emerald); background:var(--lgreen); }
+
+.h1 { font-size:clamp(38px,5vw,64px); font-weight:800; line-height:1.08; letter-spacing:-1.5px; }
+.h2 { font-size:clamp(28px,3.5vw,44px); font-weight:800; line-height:1.15; letter-spacing:-1px; }
+.h3 { font-size:clamp(20px,2.5vw,26px); font-weight:700; line-height:1.3; }
+.lead { font-size:17px; color:var(--gray600); line-height:1.75; }
+.lead-dark { font-size:16px; color:rgba(255,255,255,.6); line-height:1.7; }
+
+.btn-primary {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--blue); color:white;
+  padding:14px 28px; border-radius:10px;
+  font-size:15px; font-weight:700;
+  transition:all .2s; box-shadow:0 4px 20px rgba(26,86,219,.35);
+}
+.btn-primary:hover { background:#1647b8; transform:translateY(-2px); box-shadow:0 8px 28px rgba(26,86,219,.45); }
+
+.btn-ghost {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,.09); color:white;
+  padding:14px 28px; border-radius:10px;
+  font-size:15px; font-weight:600; border:1px solid rgba(255,255,255,.16);
+  transition:all .2s;
+}
+.btn-ghost:hover { background:rgba(255,255,255,.15); }
+
+.btn-outline {
+  display:inline-flex; align-items:center; gap:8px;
+  background:white; color:var(--blue);
+  padding:13px 26px; border-radius:10px;
+  font-size:14px; font-weight:700; border:1.5px solid var(--blue);
+  transition:all .2s;
+}
+.btn-outline:hover { background:var(--ice); transform:translateY(-1px); }
+
+.card {
+  background:white; border-radius:16px;
+  border:1px solid var(--gray200);
+  box-shadow:var(--shadow-sm);
+  transition:all .25s;
+}
+.card:hover { box-shadow:var(--shadow); transform:translateY(-3px); }
+
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; }
+.grid4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:20px; }
+
+/* ================================================================
+   HOME PAGE
+================================================================ */
+
+/* Hero */
+.hero {
+  min-height:100vh; background:var(--deep);
+  display:flex; align-items:center;
+  position:relative; overflow:hidden; padding-top:62px;
+}
+.hero-mesh {
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 60% at 70% 20%, rgba(26,86,219,.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(15,118,110,.14) 0%, transparent 55%),
+    radial-gradient(ellipse 30% 30% at 50% 50%, rgba(26,86,219,.06) 0%, transparent 70%);
+}
+.hero-grid-overlay {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(59,130,246,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,.05) 1px,transparent 1px);
+  background-size:56px 56px;
+}
+.hero-inner {
+  position:relative; z-index:2;
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:64px; align-items:center; padding:80px 0;
+}
+.hero-left {}
+.hero-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  background:rgba(59,130,246,.12); border:1px solid rgba(59,130,246,.28);
+  color:var(--sky); font-size:12px; font-weight:700;
+  padding:6px 14px; border-radius:99px; margin-bottom:24px;
+  animation:fadeIn .7s ease .1s both;
+}
+.hero-badge-dot { width:6px; height:6px; background:var(--sky); border-radius:50%; animation:pulse 2s ease infinite; }
+
+.hero-h1 { color:white; margin-bottom:20px; animation:fadeUp .7s ease .2s both; }
+.hero-h1 .serif { font-family:var(--serif); font-style:italic; color:var(--sky); }
+
+.hero-sub {
+  font-size:17px; color:rgba(255,255,255,.58); line-height:1.75;
+  max-width:500px; margin-bottom:36px;
+  animation:fadeUp .7s ease .32s both;
+}
+.hero-ctas { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:48px; animation:fadeUp .7s ease .42s both; }
+.hero-stats { display:flex; gap:36px; animation:fadeUp .7s ease .52s both; }
+.hstat-num { font-size:30px; font-weight:900; color:white; letter-spacing:-1px; line-height:1; }
+.hstat-num span { color:var(--sky); }
+.hstat-lbl { font-size:12px; color:rgba(255,255,255,.45); margin-top:4px; line-height:1.4; }
+
+/* Phone mockup */
+.hero-right { display:flex; justify-content:center; align-items:center; position:relative; }
+.phone-wrap { position:relative; animation:fadeUp .9s ease .4s both; }
+.phone {
+  width:260px; height:520px;
+  background:linear-gradient(180deg,#0D1B3E,#091530);
+  border-radius:38px; border:2px solid rgba(255,255,255,.1);
+  box-shadow:0 40px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.05);
+  overflow:hidden; position:relative;
+  animation:float 5s ease-in-out infinite;
+}
+.phone-scan {
+  position:absolute; left:0; right:0; height:1.5px;
+  background:linear-gradient(90deg,transparent,var(--sky),transparent);
+  animation:scanline 3.5s linear infinite; z-index:10; opacity:.7;
+}
+.phone-inner { padding:20px 16px; }
+.phone-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+.phone-bar .t { font-size:12px; font-weight:800; color:white; }
+.phone-logo-sm { font-size:11px; font-weight:900; color:var(--sky); }
+
+.risk-card {
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.07);
+  border-radius:14px; padding:16px; margin-bottom:12px;
+}
+.risk-label { font-size:10px; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; }
+.risk-vpa { font-size:13px; font-weight:700; color:white; font-family:monospace; margin-bottom:12px; }
+.risk-bar-track { height:6px; background:rgba(255,255,255,.1); border-radius:99px; overflow:hidden; margin-bottom:8px; }
+.risk-bar-fill { height:100%; border-radius:99px; width:0; transition:width 1.8s ease 1s; }
+.risk-verdict { font-size:12px; font-weight:800; display:flex; align-items:center; gap:5px; }
+.rv-danger { color:#F87171; }
+.rv-safe { color:#34D399; }
+
+.phone-alert {
+  background:rgba(220,38,38,.14); border:1px solid rgba(220,38,38,.28);
+  border-radius:10px; padding:12px; margin-bottom:10px;
+}
+.pa-head { font-size:11px; font-weight:800; color:#F87171; margin-bottom:4px; }
+.pa-body { font-size:10px; color:rgba(255,255,255,.55); line-height:1.55; }
+.phone-btn {
+  width:100%; background:var(--blue); color:white; border:none;
+  padding:11px; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer;
+}
+
+/* Floating chips around phone */
+.chip {
+  position:absolute; background:white; border-radius:12px;
+  padding:10px 14px; box-shadow:0 8px 28px rgba(0,0,0,.28);
+  font-size:12px; font-weight:700; color:var(--ink); white-space:nowrap;
+  animation:float 4.5s ease-in-out infinite;
+}
+.chip .ci { font-size:18px; display:block; margin-bottom:2px; }
+.chip .cs { font-size:10px; color:var(--gray400); font-weight:500; }
+.chip-a { left:-110px; top:100px; animation-delay:.8s; }
+.chip-b { right:-118px; top:180px; animation-delay:1.8s; }
+.chip-c { left:-90px; bottom:120px; animation-delay:.3s; }
+
+/* Ticker */
+.ticker-bar { background:var(--rose); padding:9px 0; overflow:hidden; }
+.ticker-inner { display:flex; gap:0; animation:ticker 28s linear infinite; white-space:nowrap; }
+.ticker-item {
+  flex-shrink:0; padding:0 32px;
+  font-size:12px; font-weight:700; color:white;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.ticker-sep { width:4px; height:4px; background:rgba(255,255,255,.4); border-radius:50%; display:inline-block; }
+
+/* Stats row */
+.stats-row {
+  padding:64px 0; background:var(--navy);
+  position:relative; overflow:hidden;
+}
+.stats-row::before {
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(26,86,219,.2) 0%,transparent 60%);
+}
+.stats-grid {
+  position:relative; z-index:1;
+  display:grid; grid-template-columns:repeat(4,1fr);
+  border:1px solid rgba(255,255,255,.07); border-radius:18px; overflow:hidden;
+}
+.stat-cell {
+  padding:36px 28px; border-right:1px solid rgba(255,255,255,.07);
+  position:relative; overflow:hidden;
+}
+.stat-cell:last-child { border-right:none; }
+.stat-cell::before {
+  content:""; position:absolute; top:0; left:0; right:0; height:3px;
+}
+.sc-blue::before   { background:var(--lblue); }
+.sc-teal::before   { background:var(--teal); }
+.sc-rose::before   { background:var(--rose); }
+.sc-amber::before  { background:var(--amber); }
+.stat-num { font-size:40px; font-weight:900; color:white; letter-spacing:-1.5px; line-height:1; margin-bottom:8px; }
+.stat-lbl { font-size:13px; color:rgba(255,255,255,.5); line-height:1.5; }
+.stat-src { font-size:10px; color:rgba(255,255,255,.22); margin-top:6px; }
+
+/* Feature strips */
+.features-section { padding:96px 0; background:var(--off); }
+.feat-header { text-align:center; margin-bottom:60px; }
+.feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.feat-card {
+  background:white; border:1px solid var(--gray200);
+  border-radius:18px; padding:30px; position:relative; overflow:hidden;
+  box-shadow:var(--shadow-sm); transition:all .25s;
+}
+.feat-card:hover { transform:translateY(-4px); box-shadow:var(--shadow); }
+.feat-card::before {
+  content:""; position:absolute; top:0; left:0; right:0; height:3px; border-radius:18px 18px 0 0;
+}
+.fc-blue::before  { background:linear-gradient(90deg,var(--blue),var(--teal)); }
+.fc-teal::before  { background:linear-gradient(90deg,var(--teal),var(--emerald)); }
+.fc-rose::before  { background:linear-gradient(90deg,var(--rose),var(--amber)); }
+.fc-amber::before { background:linear-gradient(90deg,var(--amber),var(--rose)); }
+.fc-green::before { background:linear-gradient(90deg,var(--emerald),var(--teal)); }
+.fc-purple::before{ background:linear-gradient(90deg,#7C3AED,var(--blue)); }
+
+.feat-icon { font-size:32px; margin-bottom:18px; }
+.feat-card h3 { font-size:18px; font-weight:800; margin-bottom:10px; }
+.feat-card p { font-size:14px; color:var(--gray600); line-height:1.7; }
+
+/* How it works */
+.how-section { padding:96px 0; background:white; }
+.how-steps {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:0; position:relative; margin-top:56px;
+}
+.how-steps::before {
+  content:""; position:absolute;
+  top:34px; left:12.5%; right:12.5%; height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--teal));
+}
+.how-step { text-align:center; padding:0 16px; }
+.how-circle {
+  width:68px; height:68px; border-radius:50%;
+  margin:0 auto 20px; display:flex; align-items:center; justify-content:center;
+  font-size:26px; position:relative; z-index:1;
+  background:white; box-shadow:0 0 0 6px white;
+}
+.hc-1 { background:var(--ice); }
+.hc-2 { background:var(--lteal); }
+.hc-3 { background:var(--lrose); }
+.hc-4 { background:var(--lgreen); }
+.how-step h4 { font-size:16px; font-weight:800; margin-bottom:8px; }
+.how-step p { font-size:13px; color:var(--gray600); line-height:1.65; }
+.step-badge {
+  position:absolute; top:-6px; right:-6px;
+  width:22px; height:22px; border-radius:50%;
+  background:var(--ink); color:white;
+  font-size:10px; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid white;
+}
+
+/* Testimonials */
+.testimonials-section { padding:96px 0; background:var(--gray50); }
+.test-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:56px; }
+.test-card {
+  background:white; border:1px solid var(--gray200);
+  border-radius:18px; padding:28px; box-shadow:var(--shadow-sm);
+  transition:all .25s;
+}
+.test-card:hover { transform:translateY(-4px); box-shadow:var(--shadow); }
+.test-tag {
+  display:inline-block; font-size:10px; font-weight:800;
+  text-transform:uppercase; letter-spacing:.08em;
+  padding:3px 10px; border-radius:99px; margin-bottom:16px;
+}
+.tt-safe { background:var(--lgreen); color:var(--emerald); }
+.tt-warn { background:var(--lred); color:var(--red); }
+.tt-ok   { background:var(--lteal); color:var(--teal); }
+.test-quote {
+  font-size:14px; line-height:1.8; color:var(--gray700);
+  font-style:italic; border-left:3px solid var(--gray200);
+  padding-left:14px; margin-bottom:20px;
+}
+.test-author { display:flex; align-items:center; gap:12px; }
+.test-av {
+  width:42px; height:42px; border-radius:50%;
+  background:var(--ice); display:flex; align-items:center;
+  justify-content:center; font-size:18px;
+}
+.test-name { font-size:14px; font-weight:700; }
+.test-role { font-size:12px; color:var(--gray400); }
+.test-amount { margin-left:auto; font-size:13px; font-weight:800; }
+.ta-saved { color:var(--emerald); }
+.ta-lost  { color:var(--red); }
+.ta-rec   { color:var(--teal); }
+
+/* Home CTA */
+.home-cta {
+  padding:120px 0; background:var(--deep); text-align:center; position:relative; overflow:hidden;
+}
+.home-cta::before {
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(26,86,219,.32) 0%,transparent 65%);
+}
+.home-cta-inner { position:relative; z-index:1; max-width:680px; margin:0 auto; }
+.cta-h2 { color:white; margin-bottom:16px; }
+.cta-h2 em { font-family:var(--serif); font-style:italic; color:var(--sky); }
+.cta-sub { font-size:17px; color:rgba(255,255,255,.55); margin-bottom:40px; line-height:1.7; }
+.cta-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:28px; }
+.cta-email-row { display:flex; gap:8px; max-width:420px; margin:0 auto; }
+.cta-email-inp {
+  flex:1; padding:13px 16px;
+  background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2);
+  border-radius:10px; color:white; font-size:14px; font-family:var(--sans); outline:none;
+}
+.cta-email-inp::placeholder { color:rgba(255,255,255,.38); }
+.cta-email-inp:focus { border-color:var(--sky); }
+.cta-email-btn {
+  background:var(--blue); color:white; border:none;
+  padding:13px 20px; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer;
+  white-space:nowrap; transition:all .2s;
+}
+.cta-email-btn:hover { background:#1647b8; }
+.trust-pills { display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-top:28px; }
+.trust-pill { display:flex; align-items:center; gap:5px; font-size:12px; color:rgba(255,255,255,.42); }
+
+/* ================================================================
+   FRAUD TYPES PAGE
+================================================================ */
+.page-hero {
+  padding:140px 0 80px; background:var(--deep); position:relative; overflow:hidden;
+}
+.page-hero::before {
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(26,86,219,.22) 0%,transparent 60%);
+}
+.page-hero-inner { position:relative; z-index:1; text-align:center; }
+.page-hero h1 { color:white; margin-bottom:16px; }
+.page-hero p { color:rgba(255,255,255,.55); font-size:17px; max-width:560px; margin:0 auto; line-height:1.7; }
+
+/* Fraud tabs */
+.fraud-tabs-section { padding:80px 0; background:var(--off); }
+.tab-nav {
+  display:flex; gap:8px; flex-wrap:wrap;
+  border-bottom:1px solid var(--gray200); padding-bottom:0; margin-bottom:40px;
+}
+.tab-btn {
+  padding:10px 20px; border-radius:8px 8px 0 0; border:none;
+  font-size:13px; font-weight:700; color:var(--gray400);
+  background:transparent; cursor:pointer; transition:all .2s;
+  border-bottom:3px solid transparent; margin-bottom:-1px;
+}
+.tab-btn:hover { color:var(--gray700); }
+.tab-btn.active { color:var(--blue); border-bottom-color:var(--blue); background:var(--ice); }
+
+.tab-panel { display:none; animation:fadeUp .3s ease both; }
+.tab-panel.active { display:grid; grid-template-columns:1fr 1fr; gap:36px; }
+
+.fraud-story-card {
+  background:white; border:1px solid var(--gray200);
+  border-radius:18px; padding:32px; box-shadow:var(--shadow-sm);
+}
+.fsc-head { display:flex; align-items:flex-start; gap:14px; margin-bottom:22px; }
+.fsc-icon { width:54px; height:54px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
+.fsc-title { font-size:20px; font-weight:800; margin-bottom:4px; }
+.fsc-sub { font-size:12px; color:var(--gray400); }
+.scenario-box {
+  background:var(--lred); border-left:4px solid var(--red);
+  border-radius:10px; padding:16px; margin-bottom:20px;
+  font-size:14px; line-height:1.75; color:var(--gray700); font-style:italic;
+}
+.red-flags h4 { font-size:12px; font-weight:800; color:var(--red); text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px; }
+.flag { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-bottom:1px solid var(--gray100); font-size:13px; }
+.flag:last-child { border-bottom:none; }
+.flag-dot {
+  width:20px; height:20px; background:var(--lred); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:900; color:var(--red); flex-shrink:0; margin-top:1px;
+}
+
+.fraud-info-side { display:flex; flex-direction:column; gap:18px; }
+.info-block { background:white; border:1px solid var(--gray200); border-radius:14px; padding:22px; box-shadow:var(--shadow-sm); }
+.info-block h4 { font-size:13px; font-weight:800; margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+.big-stat {
+  display:flex; align-items:center; gap:14px;
+  background:var(--lred); border-radius:10px; padding:14px; margin-bottom:10px;
+}
+.big-stat .num { font-size:34px; font-weight:900; color:var(--red); line-height:1; flex-shrink:0; }
+.big-stat .desc { font-size:12px; line-height:1.55; }
+.big-stat.teal-bg { background:var(--lteal); }
+.big-stat.teal-bg .num { color:var(--teal); }
+.big-stat.amber-bg { background:var(--lamber); }
+.big-stat.amber-bg .num { color:var(--amber); }
+
+.protect-steps {}
+.pstep { display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--gray100); }
+.pstep:last-child { border-bottom:none; }
+.pstep-n {
+  width:26px; height:26px; background:var(--ice); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:800; color:var(--blue); flex-shrink:0;
+}
+.pstep-t { font-size:13px; line-height:1.55; }
+.pstep-t strong { color:var(--blue); }
+
+/* ================================================================
+   CHECKER PAGE
+================================================================ */
+.checker-section { padding:80px 0; background:var(--off); }
+.checker-wrap { display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start; }
+
+.checker-tool {
+  background:white; border:1px solid var(--gray200);
+  border-radius:20px; padding:36px; box-shadow:var(--shadow);
+}
+.checker-tool h2 { font-size:22px; font-weight:800; margin-bottom:6px; }
+.checker-tool .sub { font-size:14px; color:var(--gray400); margin-bottom:28px; line-height:1.6; }
+.inp-row { display:flex; gap:10px; margin-bottom:8px; }
+.vpa-inp {
+  flex:1; padding:13px 16px; border:1.5px solid var(--gray200);
+  border-radius:10px; font-size:14px; font-family:var(--sans);
+  outline:none; transition:border-color .2s;
+}
+.vpa-inp:focus { border-color:var(--blue); }
+.check-btn {
+  background:var(--blue); color:white; border:none;
+  padding:13px 22px; border-radius:10px; font-size:13px; font-weight:700;
+  cursor:pointer; transition:all .2s; white-space:nowrap;
+}
+.check-btn:hover { background:#1647b8; transform:translateY(-1px); }
+.inp-hint { font-size:11px; color:var(--gray400); margin-bottom:24px; }
+
+.result-box { display:none; animation:fadeUp .3s ease; }
+.result-box.show { display:block; }
+.result-card-inner {
+  border-radius:14px; padding:20px; margin-bottom:16px;
+  display:flex; gap:16px; align-items:flex-start;
+}
+.ri-safe   { background:var(--lgreen); border:1px solid rgba(5,150,105,.2); }
+.ri-warn   { background:var(--lamber); border:1px solid rgba(217,119,6,.2); }
+.ri-danger { background:var(--lred);   border:1px solid rgba(220,38,38,.2); }
+.ri-icon { font-size:30px; flex-shrink:0; }
+.ri-verdict { font-size:18px; font-weight:800; margin-bottom:4px; }
+.ri-safe .ri-verdict   { color:var(--emerald); }
+.ri-warn .ri-verdict   { color:var(--amber); }
+.ri-danger .ri-verdict { color:var(--red); }
+.ri-detail { font-size:13px; line-height:1.65; }
+
+.risk-scores { margin-bottom:14px; }
+.rs-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.rs-lbl { font-size:12px; color:var(--gray400); width:130px; flex-shrink:0; }
+.rs-track { flex:1; height:8px; background:var(--gray100); border-radius:99px; overflow:hidden; }
+.rs-fill { height:100%; border-radius:99px; transition:width 1s ease .3s; }
+.rs-pct { font-size:12px; font-weight:700; width:36px; text-align:right; flex-shrink:0; }
+
+.tips-box { background:var(--gray50); border-radius:10px; padding:14px; }
+.tips-box h5 { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px; }
+.tip-row { display:flex; gap:8px; font-size:12px; color:var(--gray600); padding:4px 0; }
+.tip-arrow { color:var(--blue); font-weight:900; flex-shrink:0; }
+
+/* Checker right info */
+.checker-info {}
+.ci-tag { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:var(--teal); margin-bottom:16px; }
+.ci-h2 { font-size:clamp(26px,3vw,36px); font-weight:800; letter-spacing:-.8px; margin-bottom:16px; line-height:1.2; }
+.ci-lead { font-size:15px; color:var(--gray600); line-height:1.8; margin-bottom:28px; }
+.ci-features { display:flex; flex-direction:column; gap:14px; }
+.cif { display:flex; gap:12px; align-items:flex-start; }
+.cif-icon {
+  width:42px; height:42px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; flex-shrink:0;
+}
+.cif-title { font-size:14px; font-weight:700; margin-bottom:3px; }
+.cif-desc { font-size:13px; color:var(--gray600); line-height:1.5; }
+
+/* Sample VPAs */
+.sample-vpas { margin-top:28px; padding:18px; background:var(--off); border-radius:12px; border:1px solid var(--gray200); }
+.sv-title { font-size:11px; font-weight:800; color:var(--gray400); text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px; }
+.sv-chips { display:flex; gap:8px; flex-wrap:wrap; }
+.sv-chip {
+  padding:6px 14px; border-radius:99px; font-size:12px; font-weight:600;
+  cursor:pointer; border:1.5px solid; transition:all .2s;
+}
+.sv-chip:hover { transform:translateY(-1px); }
+.sv-safe   { color:var(--emerald); border-color:rgba(5,150,105,.3); background:var(--lgreen); }
+.sv-warn   { color:var(--amber);   border-color:rgba(217,119,6,.3); background:var(--lamber); }
+.sv-danger { color:var(--red);     border-color:rgba(220,38,38,.3); background:var(--lred); }
+
+/* ================================================================
+   QUIZ PAGE
+================================================================ */
+.quiz-page-hero {
+  padding:140px 0 60px; background:var(--deep); position:relative; overflow:hidden;
+}
+.quiz-page-hero::before {
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 60% 40%,rgba(15,118,110,.18) 0%,transparent 55%);
+}
+.quiz-page-inner { position:relative; z-index:1; text-align:center; }
+.quiz-page-inner h1 { color:white; margin-bottom:14px; }
+.quiz-page-inner p { color:rgba(255,255,255,.55); font-size:16px; max-width:500px; margin:0 auto 36px; line-height:1.7; }
+.quiz-score-preview {
+  display:flex; gap:24px; justify-content:center; flex-wrap:wrap;
+}
+.qsp { text-align:center; }
+.qsp .n { font-size:28px; font-weight:900; color:white; }
+.qsp .n span { color:var(--sky); }
+.qsp .l { font-size:12px; color:rgba(255,255,255,.4); margin-top:3px; }
+
+.quiz-arena { padding:64px 0; background:var(--off); }
+.quiz-card-wrap { max-width:720px; margin:0 auto; }
+
+.quiz-progress-bar { display:flex; gap:6px; margin-bottom:28px; }
+.qpb { flex:1; height:4px; border-radius:99px; background:var(--gray200); transition:background .3s; }
+.qpb.done    { background:var(--teal); }
+.qpb.current { background:var(--blue); }
+
+.quiz-card {
+  background:white; border:1px solid var(--gray200);
+  border-radius:20px; padding:36px; box-shadow:var(--shadow);
+}
+.qc-meta { font-size:12px; color:var(--gray400); font-weight:600; margin-bottom:16px; text-transform:uppercase; letter-spacing:.08em; }
+.qc-q { font-size:19px; font-weight:800; color:var(--gray900); margin-bottom:8px; line-height:1.4; }
+.qc-scenario { font-size:13px; color:var(--gray400); font-style:italic; margin-bottom:28px; padding:10px 14px; background:var(--gray50); border-radius:8px; border-left:3px solid var(--gray200); }
+
+.qc-options { display:flex; flex-direction:column; gap:10px; }
+.qc-opt {
+  background:var(--gray50); border:1.5px solid var(--gray200);
+  border-radius:12px; padding:15px 18px;
+  font-size:14px; font-weight:500; color:var(--gray700);
+  cursor:pointer; transition:all .18s; text-align:left;
+}
+.qc-opt:hover { border-color:var(--blue); background:var(--ice); color:var(--blue); }
+.qc-opt.correct { background:var(--lgreen); border-color:var(--emerald); color:var(--emerald); font-weight:700; }
+.qc-opt.wrong   { background:var(--lred);   border-color:var(--red);     color:var(--red);   }
+.qc-opt.locked  { cursor:default; opacity:.6; }
+
+.qc-feedback {
+  display:none; margin-top:20px; padding:16px; border-radius:12px;
+  font-size:14px; line-height:1.65; animation:fadeUp .3s ease;
+}
+.qcf-show { display:block; }
+.qcf-correct { background:var(--lgreen); border:1px solid rgba(5,150,105,.25); color:var(--emerald); }
+.qcf-wrong   { background:var(--lred);   border:1px solid rgba(220,38,38,.2);  color:var(--red); }
+
+.qc-bottom { display:flex; align-items:center; justify-content:space-between; margin-top:22px; }
+.qc-count { font-size:12px; color:var(--gray400); font-weight:600; }
+.qc-next-btn {
+  background:var(--blue); color:white; border:none;
+  padding:11px 24px; border-radius:9px; font-size:13px; font-weight:700; cursor:pointer;
+  opacity:0; pointer-events:none; transition:opacity .3s;
+}
+.qc-next-btn.show { opacity:1; pointer-events:all; }
+
+.quiz-result { display:none; animation:fadeUp .5s ease; }
+.quiz-result.show { display:block; }
+.qr-inner { text-align:center; padding:20px 0; }
+.qr-score { font-size:72px; font-weight:900; color:var(--ink); line-height:1; margin-bottom:10px; }
+.qr-score span { color:var(--teal); }
+.qr-label { font-size:22px; font-weight:800; margin-bottom:12px; }
+.qr-tip { font-size:14px; color:var(--gray600); line-height:1.7; max-width:520px; margin:0 auto 28px; }
+.qr-retry {
+  background:var(--blue); color:white; border:none;
+  padding:13px 28px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; transition:.2s;
+}
+.qr-retry:hover { background:#1647b8; }
+
+/* ================================================================
+   RECOVERY PAGE
+================================================================ */
+.recovery-section { padding:80px 0; background:var(--off); }
+.recovery-inner { display:grid; grid-template-columns:1fr 2fr; gap:56px; align-items:start; }
+.recovery-sidebar {
+  position:sticky; top:80px;
+  background:white; border:1px solid var(--gray200);
+  border-radius:18px; padding:28px; box-shadow:var(--shadow-sm);
+}
+.rsb-title { font-size:14px; font-weight:800; margin-bottom:18px; color:var(--ink); }
+.rsb-step {
+  display:flex; gap:10px; align-items:flex-start;
+  padding:10px 0; border-bottom:1px solid var(--gray100); cursor:pointer;
+}
+.rsb-step:last-child { border-bottom:none; }
+.rsb-dot {
+  width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:800; flex-shrink:0; margin-top:1px;
+}
+.rsb-txt .t { font-size:13px; font-weight:700; }
+.rsb-txt .s { font-size:11px; color:var(--gray400); margin-top:1px; }
+.rsb-step:hover .rsb-txt .t { color:var(--blue); }
+
+.recovery-timeline {}
+.rt-step {
+  display:flex; gap:24px; align-items:flex-start;
+  margin-bottom:40px; padding-bottom:40px;
+  border-bottom:1px solid var(--gray100); position:relative;
+}
+.rt-step:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+.rt-icon {
+  width:58px; height:58px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px; flex-shrink:0; border:2.5px solid;
+  background:white; position:relative; z-index:1;
+}
+.ri-1 { border-color:var(--red);     background:var(--lred); }
+.ri-2 { border-color:var(--blue);    background:var(--ice); }
+.ri-3 { border-color:var(--amber);   background:var(--lamber); }
+.ri-4 { border-color:var(--teal);    background:var(--lteal); }
+.ri-5 { border-color:var(--emerald); background:var(--lgreen); }
+
+.rt-timing { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--gray400); margin-bottom:6px; }
+.rt-title { font-size:21px; font-weight:800; margin-bottom:10px; }
+.rt-desc { font-size:14px; color:var(--gray600); line-height:1.75; margin-bottom:16px; }
+.rt-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.rt-pill {
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--gray50); border:1px solid var(--gray200);
+  padding:7px 13px; border-radius:7px;
+  font-size:12px; font-weight:700; color:var(--gray700); transition:all .2s;
+}
+.rt-pill:hover { background:var(--ice); border-color:var(--blue); color:var(--blue); }
+
+/* ================================================================
+   RESOURCES PAGE
+================================================================ */
+.resources-section { padding:80px 0; background:var(--off); }
+.resources-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:48px; }
+.resource-card {
+  background:white; border:1px solid var(--gray200);
+  border-radius:18px; padding:28px; box-shadow:var(--shadow-sm);
+  transition:all .25s; cursor:pointer;
+}
+.resource-card:hover { transform:translateY(-4px); box-shadow:var(--shadow); border-color:var(--blue); }
+.rc-icon {
+  width:54px; height:54px; border-radius:13px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:26px; margin-bottom:16px;
+}
+.rc-tag { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; margin-bottom:8px; }
+.rc-title { font-size:17px; font-weight:800; margin-bottom:8px; line-height:1.3; }
+.rc-desc { font-size:13px; color:var(--gray600); line-height:1.65; margin-bottom:16px; }
+.rc-link { font-size:12px; font-weight:800; color:var(--blue); display:inline-flex; align-items:center; gap:5px; }
+
+/* Helplines */
+.helplines-section { padding:80px 0; background:var(--navy); }
+.help-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:48px; }
+.help-card {
+  border-radius:14px; padding:26px; text-align:center;
+  border:1.5px solid; transition:all .25s; cursor:pointer;
+}
+.help-card:hover { transform:translateY(-4px); }
+.hc-red    { background:rgba(220,38,38,.12);  border-color:rgba(220,38,38,.3); }
+.hc-blue   { background:rgba(26,86,219,.12);  border-color:rgba(26,86,219,.3); }
+.hc-teal   { background:rgba(15,118,110,.12); border-color:rgba(15,118,110,.3); }
+.hc-amber  { background:rgba(217,119,6,.12);  border-color:rgba(217,119,6,.3); }
+.help-num  { font-size:30px; font-weight:900; margin:10px 0 6px; line-height:1; }
+.hc-red .help-num    { color:#F87171; }
+.hc-blue .help-num   { color:var(--sky); }
+.hc-teal .help-num   { color:#34D399; }
+.hc-amber .help-num  { color:#FCD34D; }
+.help-name { font-size:13px; font-weight:700; color:white; margin-bottom:4px; }
+.help-sub  { font-size:11px; color:rgba(255,255,255,.4); }
+.help-icon { font-size:28px; }
+
+/* Glossary */
+.glossary-section { padding:80px 0; background:white; }
+.glos-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:48px; max-width:960px; }
+.glos-item {
+  background:var(--off); border:1px solid var(--gray200);
+  border-radius:12px; padding:18px; transition:all .2s; cursor:default;
+}
+.glos-item:hover { border-color:var(--blue); background:var(--ice); }
+.glos-term { font-size:14px; font-weight:800; color:var(--blue); margin-bottom:6px; }
+.glos-def  { font-size:13px; color:var(--gray600); line-height:1.7; }
+
+/* ================================================================
+   FAQ PAGE
+================================================================ */
+.faq-section { padding:80px 0; background:var(--off); }
+.faq-wrap { display:grid; grid-template-columns:1fr 1.5fr; gap:56px; }
+.faq-sidebar {}
+.faq-sidebar h2 { font-size:clamp(26px,3vw,36px); font-weight:800; letter-spacing:-.8px; margin-bottom:14px; line-height:1.2; }
+.faq-sidebar p { font-size:15px; color:var(--gray600); line-height:1.8; margin-bottom:28px; }
+.faq-cta-box { background:var(--navy); border-radius:16px; padding:24px; }
+.faq-cta-box h4 { font-size:14px; font-weight:800; color:white; margin-bottom:8px; }
+.faq-cta-box p { font-size:13px; color:rgba(255,255,255,.5); margin-bottom:16px; line-height:1.6; }
+.wa-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  background:#25D366; color:white; padding:11px 20px;
+  border-radius:9px; font-size:13px; font-weight:700; cursor:pointer;
+  border:none; transition:.2s;
+}
+.wa-btn:hover { background:#128C7E; }
+
+.faq-list {}
+.faq-item { border-bottom:1px solid var(--gray200); }
+.faq-q {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:18px 0; cursor:pointer; gap:16px;
+}
+.faq-q-text { font-size:15px; font-weight:700; color:var(--gray900); line-height:1.4; }
+.faq-arrow {
+  width:30px; height:30px; border-radius:50%; background:var(--gray100);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; font-weight:700; flex-shrink:0; transition:all .25s;
+  color:var(--gray600);
+}
+.faq-item.open .faq-arrow { background:var(--blue); color:white; transform:rotate(45deg); }
+.faq-a {
+  max-height:0; overflow:hidden; transition:max-height .4s ease;
+}
+.faq-a-inner { padding-bottom:18px; font-size:14px; color:var(--gray600); line-height:1.75; }
+
+/* ================================================================
+   FOOTER
+================================================================ */
+#footer {
+  background:#020812; border-top:1px solid rgba(255,255,255,.06);
+  padding:64px 0 32px;
+}
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; margin-bottom:48px; }
+.footer-brand {}
+.footer-logo { display:flex; align-items:center; gap:9px; margin-bottom:14px; }
+.fl-mark {
+  width:32px; height:32px; border-radius:8px;
+  background:linear-gradient(135deg,var(--blue),var(--teal));
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:900; color:white;
+}
+.fl-name { font-size:16px; font-weight:800; color:white; }
+.footer-desc { font-size:13px; color:rgba(255,255,255,.36); line-height:1.75; max-width:240px; }
+.footer-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(5,150,105,.15); border:1px solid rgba(5,150,105,.3);
+  color:#34D399; font-size:11px; font-weight:700;
+  padding:4px 11px; border-radius:99px; margin-top:14px;
+}
+.footer-col h4 { font-size:12px; font-weight:800; color:white; text-transform:uppercase; letter-spacing:.1em; margin-bottom:18px; }
+.footer-col a {
+  display:block; font-size:13px; color:rgba(255,255,255,.4);
+  padding:4px 0; cursor:pointer; transition:color .2s;
+}
+.footer-col a:hover { color:rgba(255,255,255,.8); }
+.footer-bottom {
+  border-top:1px solid rgba(255,255,255,.06); padding-top:24px;
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+}
+.footer-copy { font-size:12px; color:rgba(255,255,255,.28); }
+.footer-disc { font-size:11px; color:rgba(255,255,255,.2); max-width:560px; line-height:1.55; }
+
+/* ================================================================
+   MARKET INSIGHTS PAGE
+================================================================ */
+.insights-section { padding:80px 0; background:var(--navy); position:relative; overflow:hidden; }
+.insights-section::before {
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 20% 50%,rgba(26,86,219,.14) 0%,transparent 55%);
+}
+.ins-grid { position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr; gap:48px; }
+.bar-chart { display:flex; flex-direction:column; gap:14px; margin-top:20px; }
+.bc-row { display:flex; align-items:center; gap:12px; }
+.bc-yr { font-size:12px; color:rgba(255,255,255,.45); font-family:monospace; width:40px; flex-shrink:0; }
+.bc-track { flex:1; height:34px; background:rgba(255,255,255,.06); border-radius:7px; overflow:hidden; position:relative; }
+.bc-fill {
+  height:100%; border-radius:7px; width:0;
+  background:linear-gradient(90deg,var(--blue),var(--teal));
+  transition:width 1.5s ease; display:flex; align-items:center; justify-content:flex-end; padding-right:10px;
+}
+.bc-val { font-size:11px; font-weight:700; color:white; }
+.bc-amt { font-size:11px; color:rgba(255,255,255,.5); width:90px; text-align:right; flex-shrink:0; }
+
+.ins-cards { display:flex; flex-direction:column; gap:16px; }
+.ins-card {
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+  border-radius:14px; padding:22px; transition:all .25s;
+}
+.ins-card:hover { background:rgba(255,255,255,.07); transform:translateX(4px); }
+.ins-num { font-size:40px; font-weight:900; color:white; line-height:1; letter-spacing:-1px; margin-bottom:6px; }
+.ins-num span { font-size:.55em; color:var(--sky); vertical-align:super; }
+.ins-desc { font-size:13px; color:rgba(255,255,255,.55); line-height:1.65; }
+.ins-trend {
+  display:inline-flex; align-items:center; gap:4px;
+  font-size:11px; font-weight:700; padding:3px 9px; border-radius:99px; margin-top:8px;
+}
+.it-up   { background:rgba(220,38,38,.2);  color:#F87171; }
+.it-down { background:rgba(5,150,105,.2);  color:#34D399; }
+
+.donut-wrap { display:flex; align-items:center; gap:24px; margin-top:20px; }
+.donut-legend { display:flex; flex-direction:column; gap:10px; }
+.dl-row { display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(255,255,255,.65); }
+.dl-dot { width:12px; height:12px; border-radius:3px; flex-shrink:0; }
+.dl-pct { font-weight:800; color:white; margin-left:auto; padding-left:20px; }
+
+/* ================================================================
+   MOBILE NAV
+================================================================ */
+.mobile-nav {
+  display:none; position:fixed; top:62px; left:0; right:0; bottom:0;
+  background:rgba(12,20,40,0.98); z-index:800; flex-direction:column;
+  padding:24px; gap:4px; overflow-y:auto;
+}
+.mobile-nav.open { display:flex; animation:fadeIn .2s ease; }
+.mob-link {
+  padding:14px 16px; border-radius:10px;
+  font-size:15px; font-weight:700; color:rgba(255,255,255,.7);
+  cursor:pointer; transition:all .18s;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.mob-link:hover { color:white; background:rgba(255,255,255,.06); }
+.mob-link.active { color:var(--sky); }
+.mob-btn {
+  margin-top:16px; background:var(--blue); color:white;
+  padding:15px; border-radius:10px; font-size:15px; font-weight:700;
+  text-align:center; cursor:pointer;
+}
+
+/* ================================================================
+   RESPONSIVE
+================================================================ */
+@media (max-width:960px) {
+  .grid2,.grid3,.grid4,.feat-grid,.how-steps,.test-grid,
+  .checker-wrap,.recovery-inner,.faq-wrap,.footer-grid,
+  .ins-grid,.hero-inner,.tab-panel.active { grid-template-columns:1fr !important; }
+  .hero-right,.hero-stats { display:none; }
+  .stats-grid { grid-template-columns:1fr 1fr; }
+  .help-grid,.resources-grid,.glos-grid { grid-template-columns:1fr 1fr; }
+  .how-steps::before { display:none; }
+  .nav-links { display:none; }
+  .hamburger { display:flex; }
+  .recovery-sidebar { position:static; }
+}
+@media (max-width:600px) {
+  .stats-grid,.help-grid,.resources-grid,.glos-grid { grid-template-columns:1fr; }
+  .cta-email-row { flex-direction:column; }
+  .tab-nav { flex-direction:column; }
+  .tab-btn { border-radius:8px; border-bottom:none; border-left:3px solid transparent; }
+  .tab-btn.active { border-left-color:var(--blue); }
+}
+</style>
 </head>
 <body>
-    <h1>This is a Heading</h1>
-    <p>This is a paragraph.</p>
+
+<!-- ================================================================
+     GLOBAL NAV
+================================================================ -->
+<nav id="nav">
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="showPage('home')">
+      <div class="logo-mark">H</div>
+      <div class="logo-name">Haki<span>.</span></div>
+    </div>
+    <div class="nav-links">
+      <div class="nav-link" onclick="showPage('home')"     id="nl-home">Home</div>
+      <div class="nav-link" onclick="showPage('fraud')"    id="nl-fraud">Fraud Types</div>
+      <div class="nav-link" onclick="showPage('insights')" id="nl-insights">Market Data</div>
+      <div class="nav-link" onclick="showPage('checker')"  id="nl-checker">Check UPI ID</div>
+      <div class="nav-link" onclick="showPage('quiz')"     id="nl-quiz">Fraud Quiz</div>
+      <div class="nav-link" onclick="showPage('recovery')" id="nl-recovery">Recovery</div>
+      <div class="nav-link" onclick="showPage('resources')" id="nl-resources">Resources</div>
+      <div class="nav-link" onclick="showPage('faq')"      id="nl-faq">FAQ</div>
+      <div class="nav-btn"  onclick="showPage('checker')">Check Free &rarr;</div>
+    </div>
+    <div class="hamburger" onclick="toggleMobileNav()" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile nav -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mob-link" onclick="showPage('home');closeMobileNav()">🏠 Home</div>
+  <div class="mob-link" onclick="showPage('fraud');closeMobileNav()">🎓 Fraud Types</div>
+  <div class="mob-link" onclick="showPage('insights');closeMobileNav()">📊 Market Data</div>
+  <div class="mob-link" onclick="showPage('checker');closeMobileNav()">🔍 Check UPI ID</div>
+  <div class="mob-link" onclick="showPage('quiz');closeMobileNav()">🎯 Fraud Quiz</div>
+  <div class="mob-link" onclick="showPage('recovery');closeMobileNav()">🆘 Recovery Guide</div>
+  <div class="mob-link" onclick="showPage('resources');closeMobileNav()">📚 Resources</div>
+  <div class="mob-link" onclick="showPage('faq');closeMobileNav()">❓ FAQ</div>
+  <div class="mob-btn"  onclick="showPage('checker');closeMobileNav()">🔍 Check a UPI ID Free</div>
+</div>
+
+<!-- ================================================================
+     PAGE: HOME
+================================================================ -->
+<div class="page active" id="page-home">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-mesh"></div>
+    <div class="hero-grid-overlay"></div>
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <div class="hero-badge"><div class="hero-badge-dot"></div>India's #1 Consumer Fraud Protection</div>
+          <h1 class="h1 hero-h1">Your payment.<br><span class="serif">Fraud-proof,</span><br>always.</h1>
+          <p class="hero-sub">Rs.22,842 crore was stolen from Indians in 2024. Haki gives you AI-powered fraud detection, real-time warnings, and guided recovery — before, during, and after every payment.</p>
+          <div class="hero-ctas">
+            <div class="btn-primary" onclick="showPage('checker')">🔍 Check a UPI ID Free</div>
+            <div class="btn-ghost"   onclick="showPage('quiz')">Test Your Fraud IQ &rarr;</div>
+          </div>
+          <div class="hero-stats">
+            <div>
+              <div class="hstat-num">Rs.22,842<span> Cr</span></div>
+              <div class="hstat-lbl">Stolen from Indians<br>in 2024</div>
+            </div>
+            <div>
+              <div class="hstat-num" style="color:var(--sky)">20L+</div>
+              <div class="hstat-lbl">Fraud cases<br>last year</div>
+            </div>
+            <div>
+              <div class="hstat-num" style="color:#34D399">96%</div>
+              <div class="hstat-lbl">Detection<br>accuracy</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="chip chip-a">
+            <span class="ci">⚠️</span>HIGH RISK VPA
+            <div class="cs">Flagged 14 times this week</div>
+          </div>
+          <div class="chip chip-b">
+            <span class="ci">✅</span>VERIFIED SAFE
+            <div class="cs">2,840 clean transactions</div>
+          </div>
+          <div class="chip chip-c">
+            <span class="ci">🛡</span>Rs.50,000 Covered
+            <div class="cs">Haki Shield Active</div>
+          </div>
+          <div class="phone-wrap">
+            <div class="phone">
+              <div class="phone-scan"></div>
+              <div class="phone-inner">
+                <div class="phone-bar">
+                  <span class="t">9:41 AM</span>
+                  <span class="phone-logo-sm">HAKI</span>
+                </div>
+                <div class="risk-card">
+                  <div class="risk-label">Checking VPA...</div>
+                  <div class="risk-vpa">offer-prize@ybl</div>
+                  <div class="risk-bar-track">
+                    <div class="risk-bar-fill" id="heroRiskBar" style="background:#F87171;width:0%"></div>
+                  </div>
+                  <div class="risk-verdict rv-danger">🚨 HIGH RISK — DO NOT PAY</div>
+                </div>
+                <div class="phone-alert">
+                  <div class="pa-head">⚠️ 3 Red Flags Detected</div>
+                  <div class="pa-body">VPA created 2 days ago. 14 fraud reports. Matches lottery scam pattern.</div>
+                </div>
+                <button class="phone-btn" onclick="showPage('checker')">See Full Report &rarr;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ticker -->
+  <div class="ticker-bar">
+    <div class="ticker-inner" id="tickerInner"></div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="stats-row">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-cell sc-blue">
+          <div class="stat-num">Rs.22,842 Cr</div>
+          <div class="stat-lbl">Digital fraud losses in India in 2024 — up 206% from 2023</div>
+          <div class="stat-src">Source: I4C / Ministry of Home Affairs</div>
+        </div>
+        <div class="stat-cell sc-teal">
+          <div class="stat-num">20 Lakh+</div>
+          <div class="stat-lbl">Fraud cases registered in FY2024-25. 1 in 5 victims never complains</div>
+          <div class="stat-src">Source: RBI Annual Report 2024-25</div>
+        </div>
+        <div class="stat-cell sc-rose">
+          <div class="stat-num">85%</div>
+          <div class="stat-lbl">Year-on-year rise in UPI-specific fraud. Rs.1,087 Cr lost via UPI in FY24</div>
+          <div class="stat-src">Source: NPCI Annual Report</div>
+        </div>
+        <div class="stat-cell sc-amber">
+          <div class="stat-num">51%</div>
+          <div class="stat-lbl">Of fraud victims never file a complaint — due to shame, complexity, or distrust</div>
+          <div class="stat-src">Source: LocalCircles Survey 2025</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <section class="features-section">
+    <div class="container">
+      <div class="feat-header">
+        <div class="tag tag-blue">What Haki Does</div>
+        <h2 class="h2" style="margin-bottom:12px">Protection at every step<br>of your payment journey</h2>
+        <p class="lead" style="max-width:520px;margin:0 auto">From checking a UPI ID before you pay, to guiding your recovery if you are scammed — Haki has you covered.</p>
+      </div>
+      <div class="feat-grid">
+        <div class="feat-card fc-blue">
+          <div class="feat-icon">🔍</div>
+          <h3>HakiScan — UPI Risk Check</h3>
+          <p>AI scores any UPI ID in 2 seconds across 14 risk signals: account age, transaction history, fraud reports, and known scam patterns.</p>
+        </div>
+        <div class="feat-card fc-teal">
+          <div class="feat-icon">🚨</div>
+          <h3>Live Scam Alerts</h3>
+          <p>Community-powered fraud alerts specific to your city and payment app. Know what scams are active near you this week, right now.</p>
+        </div>
+        <div class="feat-card fc-rose">
+          <div class="feat-icon">📋</div>
+          <h3>RecoverRight Wizard</h3>
+          <p>If fraud happens, our step-by-step wizard guides you through bank complaint, cyber portal, FIR, and RBI escalation — with AI-drafted letters.</p>
+        </div>
+        <div class="feat-card fc-amber">
+          <div class="feat-icon">🛡</div>
+          <h3>Haki Shield Insurance</h3>
+          <p>Up to Rs.1 lakh annual fraud cover for just Rs.99/month. Claim auto-triggered from your fraud report. No paperwork, no branch visit.</p>
+        </div>
+        <div class="feat-card fc-green">
+          <div class="feat-icon">🎓</div>
+          <h3>Fraud Education Hub</h3>
+          <p>Interactive lessons, real case studies, and a 5-question Fraud IQ quiz. Know your enemy before they find you.</p>
+        </div>
+        <div class="feat-card fc-purple">
+          <div class="feat-icon">💬</div>
+          <h3>WhatsApp Bot</h3>
+          <p>Works on any phone. Type /check [UPI ID] to get a risk score instantly. 8 Indian languages. No app download needed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="how-section">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:0">
+        <div class="tag tag-teal" style="margin:0 auto 16px">How It Works</div>
+        <h2 class="h2" style="margin-bottom:12px">Four steps to complete<br>fraud protection</h2>
+        <p class="lead" style="max-width:480px;margin:0 auto">Haki works before, during, after, and beyond every transaction you make.</p>
+      </div>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-circle hc-1" style="position:relative">
+            🔍
+            <div class="step-badge">1</div>
+          </div>
+          <h4>Check Before Paying</h4>
+          <p>Enter any UPI ID, QR or phone number. Get an instant AI risk score before sending a single rupee.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-circle hc-2" style="position:relative">
+            🚨
+            <div class="step-badge">2</div>
+          </div>
+          <h4>Get Real-Time Alerts</h4>
+          <p>Receive scam alerts for your city and payment app. Know what frauds are active near you this week.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-circle hc-3" style="position:relative">
+            📋
+            <div class="step-badge">3</div>
+          </div>
+          <h4>Report and Recover</h4>
+          <p>Our wizard guides you step-by-step through bank complaint, cyber portal, and FIR filing.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-circle hc-4" style="position:relative">
+            🛡
+            <div class="step-badge">4</div>
+          </div>
+          <h4>Stay Insured</h4>
+          <p>Rs.99/month gives you Rs.1 lakh fraud cover. Auto-claim triggered from your Haki report.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:0">
+        <div class="tag tag-rose" style="margin:0 auto 16px">Real Stories</div>
+        <h2 class="h2" style="margin-bottom:12px">People like you.<br>Outcomes that changed.</h2>
+        <p class="lead" style="max-width:480px;margin:0 auto">Real experiences from Haki users across India.</p>
+      </div>
+      <div class="test-grid">
+        <div class="test-card">
+          <div class="test-tag tt-safe">Protected</div>
+          <div class="test-quote">"I was about to pay Rs.18,000 to an OLX seller. I checked his UPI ID on Haki first — it showed 6 fraud reports. I stopped immediately. Haki saved me from losing my savings."</div>
+          <div class="test-author">
+            <div class="test-av">👨</div>
+            <div>
+              <div class="test-name">Ramesh K.</div>
+              <div class="test-role">Business Owner, Pune</div>
+            </div>
+            <div class="test-amount ta-saved">Rs.18,000 Saved</div>
+          </div>
+        </div>
+        <div class="test-card">
+          <div class="test-tag tt-warn">Victim — Before Haki</div>
+          <div class="test-quote">"I lost Rs.45,000 to a fake lottery call. They asked me to approve a UPI request — I did not know that meant I was paying them. I wish I had known this before."</div>
+          <div class="test-author">
+            <div class="test-av">👩</div>
+            <div>
+              <div class="test-name">Sunita M.</div>
+              <div class="test-role">Homemaker, Lucknow</div>
+            </div>
+            <div class="test-amount ta-lost">Rs.45,000 Lost</div>
+          </div>
+        </div>
+        <div class="test-card">
+          <div class="test-tag tt-ok">Recovered</div>
+          <div class="test-quote">"Scammed Rs.1.2 lakh by a fake trading app. Haki's RecoverRight walked me through bank complaint, cybercrime portal, and RBI ombudsman. I got Rs.80,000 back in 45 days."</div>
+          <div class="test-author">
+            <div class="test-av">👨‍💼</div>
+            <div>
+              <div class="test-name">Vikram S.</div>
+              <div class="test-role">Software Engineer, Bengaluru</div>
+            </div>
+            <div class="test-amount ta-rec">Rs.80,000 Recovered</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="home-cta">
+    <div class="container">
+      <div class="home-cta-inner">
+        <div class="tag tag-blue" style="margin:0 auto 20px">Join Haki</div>
+        <h2 class="h2 cta-h2">Don't wait to get<br><em>scammed to get smart.</em></h2>
+        <p class="cta-sub">Join 100,000+ Indians already protected. Free for basic protection. Rs.99/month for full cover including Rs.50,000 fraud insurance.</p>
+        <div class="cta-btns">
+          <div class="btn-primary" onclick="showPage('checker')">🔍 Check a UPI ID Free</div>
+          <div class="btn-ghost"   onclick="showPage('quiz')">Test My Fraud IQ</div>
+        </div>
+        <div class="cta-email-row">
+          <input class="cta-email-inp" type="email" placeholder="Your email or phone" id="ctaEmail">
+          <button class="cta-email-btn" onclick="handleCtaSubmit()">Get Early Access</button>
+        </div>
+        <div class="trust-pills">
+          <div class="trust-pill">🔒 No credit card needed</div>
+          <div class="trust-pill">✅ DPDP-compliant privacy</div>
+          <div class="trust-pill">🇮🇳 Built for India</div>
+          <div class="trust-pill">⚡ Works on WhatsApp</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PAGE: FRAUD TYPES
+================================================================ -->
+<div class="page" id="page-fraud">
+  <div class="page-hero">
+    <div class="page-hero-inner container">
+      <div class="tag tag-rose" style="margin:0 auto 16px">Know Your Threats</div>
+      <h1 class="h1">The frauds targeting<br>Indians right now</h1>
+      <p>Understanding exactly how each scam works is your first and most powerful layer of protection against it.</p>
+    </div>
+  </div>
+  <section class="fraud-tabs-section">
+    <div class="container">
+      <div class="tab-nav" id="fraudTabNav">
+        <button class="tab-btn active" onclick="showFraudTab('upi',this)">📲 UPI Collect Scam</button>
+        <button class="tab-btn" onclick="showFraudTab('otp',this)">🔐 OTP Theft</button>
+        <button class="tab-btn" onclick="showFraudTab('qr',this)">📷 QR Code Fraud</button>
+        <button class="tab-btn" onclick="showFraudTab('invest',this)">📈 Investment Scam</button>
+        <button class="tab-btn" onclick="showFraudTab('imperson',this)">👤 Impersonation</button>
+      </div>
+      <div id="fraudTabContent"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PAGE: MARKET INSIGHTS
+================================================================ -->
+<div class="page" id="page-insights">
+  <div class="page-hero">
+    <div class="page-hero-inner container">
+      <div class="tag tag-blue" style="margin:0 auto 16px">Market Intelligence</div>
+      <h1 class="h1">India's fraud crisis<br>is accelerating</h1>
+      <p>The data every Indian payment user needs to see — sourced from RBI, NPCI, and I4C.</p>
+    </div>
+  </div>
+  <section class="insights-section">
+    <div class="container">
+      <div class="ins-grid">
+        <div>
+          <h3 class="h3" style="color:white;margin-bottom:6px">Annual Fraud Losses (Rs. Crore)</h3>
+          <p style="color:rgba(255,255,255,.45);font-size:14px;margin-bottom:4px">India 2019–2024 | Source: RBI, I4C</p>
+          <div class="bar-chart" id="insBarChart"></div>
+          <div style="margin-top:36px">
+            <h3 class="h3" style="color:white;margin-bottom:6px">Fraud by Category</h3>
+            <p style="color:rgba(255,255,255,.45);font-size:14px;margin-bottom:16px">FY2024-25 — What is stealing from Indians</p>
+            <div class="donut-wrap">
+              <svg viewBox="0 0 140 140" width="130" height="130" style="flex-shrink:0">
+                <circle cx="70" cy="70" r="50" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="28"/>
+                <circle cx="70" cy="70" r="50" fill="none" stroke="#3B82F6" stroke-width="28" stroke-dasharray="125.6 188.4" stroke-dashoffset="0" transform="rotate(-90 70 70)"/>
+                <circle cx="70" cy="70" r="50" fill="none" stroke="#0F766E" stroke-width="28" stroke-dasharray="100.5 213.5" stroke-dashoffset="-125.6" transform="rotate(-90 70 70)"/>
+                <circle cx="70" cy="70" r="50" fill="none" stroke="#D97706" stroke-width="28" stroke-dasharray="56.5 257.5" stroke-dashoffset="-226.1" transform="rotate(-90 70 70)"/>
+                <circle cx="70" cy="70" r="50" fill="none" stroke="#475569" stroke-width="28" stroke-dasharray="31.4 282.6" stroke-dashoffset="-282.6" transform="rotate(-90 70 70)"/>
+                <circle cx="70" cy="70" r="36" fill="#112250"/>
+                <text x="70" y="66" text-anchor="middle" fill="white" font-size="13" font-weight="800" font-family="Plus Jakarta Sans">20L+</text>
+                <text x="70" y="80" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="9" font-family="Plus Jakarta Sans">cases/yr</text>
+              </svg>
+              <div class="donut-legend">
+                <div class="dl-row"><div class="dl-dot" style="background:#3B82F6"></div>UPI Collect Scams<span class="dl-pct">40%</span></div>
+                <div class="dl-row"><div class="dl-dot" style="background:#0F766E"></div>OTP / SIM Swap<span class="dl-pct">32%</span></div>
+                <div class="dl-row"><div class="dl-dot" style="background:#D97706"></div>Fake Investment<span class="dl-pct">18%</span></div>
+                <div class="dl-row"><div class="dl-dot" style="background:#475569"></div>Other Fraud<span class="dl-pct">10%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ins-cards">
+          <div class="ins-card">
+            <div class="ins-num">1 <span>in</span> 5</div>
+            <div class="ins-desc">UPI-using families in India have experienced payment fraud in the last 3 years. The risk is statistically certain for most households.</div>
+            <div class="ins-trend it-up">Risk doubles every 18 months</div>
+          </div>
+          <div class="ins-card">
+            <div class="ins-num">60<span>%</span></div>
+            <div class="ins-desc">Of fraud victims were first-time or recent digital payment users — mostly aged 35-65, newly converted from cash with limited fraud awareness.</div>
+            <div class="ins-trend it-up">New UPI users = Primary targets</div>
+          </div>
+          <div class="ins-card">
+            <div class="ins-num">Rs.38K</div>
+            <div class="ins-desc">Average loss per fraud victim — equivalent to 2-3 months of household expenses for a median Indian family. Many fall into debt to recover.</div>
+            <div class="ins-trend it-up">24% higher than last year</div>
+          </div>
+          <div class="ins-card">
+            <div class="ins-num">20<span>%</span></div>
+            <div class="ins-desc">Of Indians have received any cyber safety training. 80% are navigating an increasingly hostile digital payments landscape with zero protection knowledge.</div>
+            <div class="ins-trend it-down">Education coverage needs 4x expansion</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section style="padding:80px 0;background:var(--off)">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:48px">
+        <div class="tag tag-rose" style="margin:0 auto 16px">Who Gets Targeted</div>
+        <h2 class="h2" style="margin-bottom:12px">Fraud does not discriminate —<br>but some groups are hit harder</h2>
+      </div>
+      <div class="grid4">
+        <div style="background:var(--lred);border-radius:16px;padding:24px;text-align:center">
+          <div style="font-size:36px;font-weight:900;color:var(--red);margin-bottom:8px">68%</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px">OTP fraud victims</div>
+          <div style="font-size:13px;color:var(--gray600)">are above age 45 — new digital banking users</div>
+        </div>
+        <div style="background:var(--lamber);border-radius:16px;padding:24px;text-align:center">
+          <div style="font-size:36px;font-weight:900;color:var(--amber);margin-bottom:8px">25%</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px">Women are victims</div>
+          <div style="font-size:13px;color:var(--gray600)">of total fraud cases — shopping and social scams</div>
+        </div>
+        <div style="background:var(--lgreen);border-radius:16px;padding:24px;text-align:center">
+          <div style="font-size:36px;font-weight:900;color:var(--emerald);margin-bottom:8px">62%</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px">QR fraud victims</div>
+          <div style="font-size:13px;color:var(--gray600)">are online marketplace sellers on OLX/Quikr</div>
+        </div>
+        <div style="background:var(--ice);border-radius:16px;padding:24px;text-align:center">
+          <div style="font-size:36px;font-weight:900;color:var(--blue);margin-bottom:8px">3.2L</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px">Average investment fraud loss</div>
+          <div style="font-size:13px;color:var(--gray600)">Highest of any fraud category in India</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PAGE: VPA CHECKER
+================================================================ -->
+<div class="page" id="page-checker">
+  <div class="page-hero">
+    <div class="page-hero-inner container">
+      <div class="tag tag-teal" style="margin:0 auto 16px">HakiScan</div>
+      <h1 class="h1">Check any UPI ID<br>before you pay</h1>
+      <p>AI risk scoring across 14 signals in under 2 seconds. Free for everyone, forever.</p>
+    </div>
+  </div>
+  <section class="checker-section">
+    <div class="container">
+      <div class="checker-wrap">
+        <div>
+          <div class="checker-tool">
+            <h2>🔍 UPI ID Risk Check</h2>
+            <p class="sub">Our AI checks against 50,000+ flagged VPAs, transaction patterns, and community reports. Try a sample or enter any UPI ID.</p>
+            <div class="inp-row">
+              <input class="vpa-inp" type="text" id="vpaInput" placeholder="Enter UPI ID  e.g. name@upi" onkeydown="if(event.key==='Enter')checkVPA()">
+              <button class="check-btn" onclick="checkVPA()">Check Now</button>
+            </div>
+            <div class="inp-hint">Try: offer-prize@ybl (high risk) &nbsp;|&nbsp; merchant@okaxis (safe) &nbsp;|&nbsp; newid@paytm (medium)</div>
+
+            <div class="result-box" id="resultBox">
+              <div class="result-card-inner" id="resultCard">
+                <div class="ri-icon" id="resultIcon">✅</div>
+                <div>
+                  <div class="ri-verdict" id="resultVerdict">Checking...</div>
+                  <div class="ri-detail" id="resultDetail"></div>
+                </div>
+              </div>
+              <div class="risk-scores">
+                <div class="rs-row"><div class="rs-lbl">Account Age</div><div class="rs-track"><div class="rs-fill" id="rsBar1" style="width:0%"></div></div><div class="rs-pct" id="rsPct1">-</div></div>
+                <div class="rs-row"><div class="rs-lbl">Transaction History</div><div class="rs-track"><div class="rs-fill" id="rsBar2" style="width:0%"></div></div><div class="rs-pct" id="rsPct2">-</div></div>
+                <div class="rs-row"><div class="rs-lbl">Community Reports</div><div class="rs-track"><div class="rs-fill" id="rsBar3" style="width:0%"></div></div><div class="rs-pct" id="rsPct3">-</div></div>
+                <div class="rs-row"><div class="rs-lbl">Pattern Match</div><div class="rs-track"><div class="rs-fill" id="rsBar4" style="width:0%"></div></div><div class="rs-pct" id="rsPct4">-</div></div>
+              </div>
+              <div class="tips-box">
+                <h5>Safety Tips for This Result</h5>
+                <div id="resultTips"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sample-vpas">
+            <div class="sv-title">Try Sample VPAs</div>
+            <div class="sv-chips">
+              <div class="sv-chip sv-safe"   onclick="fillAndCheck('verified.merchant@sbi')">✅ verified.merchant@sbi</div>
+              <div class="sv-chip sv-warn"   onclick="fillAndCheck('newid123@paytm')">⚠️ newid123@paytm</div>
+              <div class="sv-chip sv-danger" onclick="fillAndCheck('offer-prize@ybl')">🚨 offer-prize@ybl</div>
+              <div class="sv-chip sv-danger" onclick="fillAndCheck('lucky-winner@upi')">🚨 lucky-winner@upi</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="checker-info">
+          <div class="ci-tag">HakiScan Technology</div>
+          <h2 class="ci-h2">AI-powered VPA risk scoring — free for all Indians</h2>
+          <p class="ci-lead">Our fraud detection model is trained on 50,000+ real fraud reports, transaction patterns, and community data. Every UPI ID gets a risk score based on 14 data points in under 2 seconds.</p>
+          <div class="ci-features">
+            <div class="cif">
+              <div class="cif-icon" style="background:var(--ice)">📅</div>
+              <div>
+                <div class="cif-title">Account Age and History</div>
+                <div class="cif-desc">Newly created VPAs are statistically higher risk. We flag anything under 30 days old with limited transaction volume.</div>
+              </div>
+            </div>
+            <div class="cif">
+              <div class="cif-icon" style="background:var(--lteal)">👥</div>
+              <div>
+                <div class="cif-title">Community Reports</div>
+                <div class="cif-desc">100,000+ Haki users report suspicious VPAs in real-time, feeding our shared fraud registry that grows smarter every day.</div>
+              </div>
+            </div>
+            <div class="cif">
+              <div class="cif-icon" style="background:var(--lamber)">🧠</div>
+              <div>
+                <div class="cif-title">Pattern Recognition AI</div>
+                <div class="cif-desc">Matches VPA naming, handle patterns, and behaviour against 40+ known scam templates across India.</div>
+              </div>
+            </div>
+            <div class="cif">
+              <div class="cif-icon" style="background:var(--lgreen)">🔗</div>
+              <div>
+                <div class="cif-title">Cross-Platform Intelligence</div>
+                <div class="cif-desc">Aggregates signals from CPFIR public data, community reports, and bank-shared fraud incident feeds for maximum coverage.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PAGE: QUIZ
+================================================================ -->
+<div class="page" id="page-quiz">
+  <div class="quiz-page-hero">
+    <div class="container quiz-page-inner">
+      <div class="tag tag-teal" style="margin:0 auto 16px">Fraud IQ Test</div>
+      <h1 class="h1">How fraud-safe are you?</h1>
+      <p>Test yourself with 5 real-world scenarios. Your score tells you exactly how protected — or exposed — you are right now.</p>
+      <div class="quiz-score-preview">
+        <div class="qsp"><div class="n">5</div><div class="l">Questions</div></div>
+        <div class="qsp"><div class="n"><span>3</span> min</div><div class="l">To Complete</div></div>
+        <div class="qsp"><div class="n">Free</div><div class="l">Always</div></div>
+      </div>
+    </div>
+  </div>
+  <section class="quiz-arena">
+    <div class="container">
+      <div class="quiz-card-wrap">
+        <div class="quiz-progress-bar" id="quizProgressBar"></div>
+        <div class="quiz-card">
+          <div id="quizBody">
+            <div class="qc-meta" id="qcMeta">Question 1 of 5</div>
+            <div class="qc-q" id="qcQ"></div>
+            <div class="qc-scenario" id="qcScenario"></div>
+            <div class="qc-options" id="qcOptions"></div>
+            <div class="qc-feedback" id="qcFeedback"></div>
+            <div class="qc-bottom">
+              <div class="qc-count" id="qcCount"></div>
+              <button class="qc-next-btn" id="qcNextBtn" onclick="nextQ()">Next Question &rarr;</button>
+            </div>
+          </div>
+          <div class="quiz-result" id="quizResult">
+            <div class="qr-inner">
+              <div class="qr-score" id="qrScore"></div>
+              <div class="qr-label" id="qrLabel"></div>
+              <div class="qr-tip" id="qrTip"></div>
+              <button class="qr-retry" onclick="resetQuiz()">Try Again</button>
+              <div style="margin-top:16px">
+                <span class="btn-outline" onclick="showPage('fraud')" style="display:inline-flex;margin-top:8px">Learn About Fraud Types &rarr;</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PAGE: RECOVERY
+================================================================ -->
+<div class="page" id="page-recovery">
+  <div class="page-hero">
+    <div class="page-hero-inner container">
+      <div class="tag tag-rose" style="margin:0 auto 16px">Got Scammed? Act Now.</div>
+      <h1 class="h1">Your 5-step fraud<br>recovery guide</h1>
+      <p>Act fast — your window to recover money narrows after 24 hours. Every minute matters. Follow these steps in order.</p>
+    </div>
+  </div>
+  <section class="recovery-section">
+    <div class="container">
+      <div class="recovery-inner">
+        <div class="recovery-sidebar">
+          <div class="rsb-title">Recovery Steps</div>
+          <div class="rsb-step">
+            <div class="rsb-dot" style="background:var(--lred);color:var(--red)">1</div>
+            <div class="rsb-txt"><div class="t">Freeze the transaction</div><div class="s">Within 1 hour — most critical</div></div>
+          </div>
+          <div class="rsb-step">
+            <div class="rsb-dot" style="background:var(--ice);color:var(--blue)">2</div>
+            <div class="rsb-txt"><div class="t">File on cybercrime.gov.in</div><div class="s">Within 24 hours</div></div>
+          </div>
+          <div class="rsb-step">
+            <div class="rsb-dot" style="background:var(--lamber);color:var(--amber)">3</div>
+            <div class="rsb-txt"><div class="t">File an FIR</div><div class="s">Within 72 hours</div></div>
+          </div>
+          <div class="rsb-step">
+            <div class="rsb-dot" style="background:var(--lteal);color:var(--teal)">4</div>
+            <div class="rsb-txt"><div class="t">Escalate to RBI Ombudsman</div><div class="s">Within 1 week</div></div>
+          </div>
+          <div class="rsb-step">
+            <div class="rsb-dot" style="background:var(--lgreen);color:var(--emerald)">5</div>
+            <div class="rsb-txt"><div class="t">Engage a cyber lawyer</div><div class="s">For losses above Rs.1 lakh</div></div>
+          </div>
+          <div style="margin-top:24px;padding:16px;background:var(--lred);border-radius:12px;">
+            <div style="font-size:13px;font-weight:800;color:var(--red);margin-bottom:6px">Emergency Hotline</div>
+            <div style="font-size:28px;font-weight:900;color:var(--red)">1930</div>
+            <div style="font-size:12px;color:var(--gray600)">National Cyber Crime — 24/7 — Free</div>
+          </div>
+        </div>
+        <div class="recovery-timeline">
+          <div class="rt-step">
+            <div class="rt-icon ri-1">🚨</div>
+            <div>
+              <div class="rt-timing">Within 1 Hour — MOST CRITICAL</div>
+              <div class="rt-title">Freeze the transaction immediately</div>
+              <div class="rt-desc">Call your bank's 24/7 helpline NOW and report the fraud. Ask them to freeze the recipient account. The faster you act, the higher the chance of recovery before the fraudster withdraws the money. Every minute that passes reduces your recovery odds.</div>
+              <div class="rt-actions">
+                <a class="rt-pill" href="tel:1930">📞 Cyber Crime: 1930</a>
+                <a class="rt-pill" href="tel:18001111109">📞 RBI: 14448</a>
+                <div class="rt-pill" onclick="showPage('resources')">📱 Find Your Bank Number</div>
+              </div>
+            </div>
+          </div>
+          <div class="rt-step">
+            <div class="rt-icon ri-2">📝</div>
+            <div>
+              <div class="rt-timing">Within 24 Hours</div>
+              <div class="rt-title">File on cybercrime.gov.in</div>
+              <div class="rt-desc">Visit the National Cybercrime Reporting Portal and file a complaint. You need: your bank transaction ID, the fraudster's UPI ID or phone number, and a description of what happened. Haki generates this complaint document for you automatically in our RecoverRight wizard.</div>
+              <div class="rt-actions">
+                <a class="rt-pill" href="https://cybercrime.gov.in" target="_blank">🌐 cybercrime.gov.in</a>
+                <div class="rt-pill" onclick="showPage('resources')">✍️ Auto-Draft My Complaint</div>
+              </div>
+            </div>
+          </div>
+          <div class="rt-step">
+            <div class="rt-icon ri-3">🏛</div>
+            <div>
+              <div class="rt-timing">Within 72 Hours</div>
+              <div class="rt-title">File an FIR at your local police station</div>
+              <div class="rt-desc">Take a physical FIR at your nearest police station cybercrime cell. Bring printouts of your bank statement, the fraud transaction, and your cybercrime.gov.in acknowledgement number. The FIR number is critical for all further proceedings including bank escalation and legal action.</div>
+              <div class="rt-actions">
+                <div class="rt-pill" onclick="showPage('resources')">📄 FIR Template Download</div>
+                <div class="rt-pill">📍 Find Nearest Cyber Cell</div>
+              </div>
+            </div>
+          </div>
+          <div class="rt-step">
+            <div class="rt-icon ri-4">🏦</div>
+            <div>
+              <div class="rt-timing">Within 1 Week</div>
+              <div class="rt-title">Escalate to RBI Banking Ombudsman</div>
+              <div class="rt-desc">If your bank has not responded or resolved within 30 days, escalate to the RBI Banking Ombudsman. This is a free, formal channel that banks are legally required to respond to. Haki tracks your escalation timeline and sends you reminders automatically.</div>
+              <div class="rt-actions">
+                <a class="rt-pill" href="https://cms.rbi.org.in" target="_blank">🏛 RBI CMS Portal</a>
+                <div class="rt-pill" onclick="showPage('resources')">📧 Escalation Email Template</div>
+              </div>
+            </div>
+          </div>
+          <div class="rt-step">
+            <div class="rt-icon ri-5">⚖️</div>
+            <div>
+              <div class="rt-timing">For Losses Above Rs.1 Lakh</div>
+              <div class="rt-title">Engage a cyber law specialist</div>
+              <div class="rt-desc">For larger losses, a cybercrime lawyer can file under IT Act Section 66D (fraud using communication) which carries up to 3 years imprisonment and Rs.1 lakh fine for perpetrators. Higher legal pressure means higher recovery odds. Haki connects you with verified cyber lawyers at Rs.499 per session.</div>
+              <div class="rt-actions">
+                <div class="rt-pill">👨‍⚖️ Book Cyber Lawyer — Rs.499</div>
+                <div class="rt-pill" onclick="showPage('resources')">📋 Case Checklist</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PAGE: RESOURCES
+================================================================ -->
+<div class="page" id="page-resources">
+  <div class="page-hero">
+    <div class="page-hero-inner container">
+      <div class="tag tag-green" style="margin:0 auto 16px">Resource Library</div>
+      <h1 class="h1">Free guides, templates<br>and tools for every Indian</h1>
+      <p>Everything you need to protect yourself, help your family, and recover from fraud — completely free.</p>
+    </div>
+  </div>
+  <section class="resources-section">
+    <div class="container">
+      <div class="resources-grid" id="resourceGrid"></div>
+    </div>
+  </section>
+  <section class="helplines-section">
+    <div class="container">
+      <div style="margin-bottom:48px">
+        <div class="tag tag-rose" style="margin-bottom:16px">Emergency Numbers</div>
+        <h2 class="h2" style="color:white;margin-bottom:12px">Save these numbers before you need them</h2>
+        <p style="color:rgba(255,255,255,.5);max-width:460px;line-height:1.7">These are the official government channels for reporting and recovering from payment fraud in India.</p>
+      </div>
+      <div class="help-grid">
+        <a class="help-card hc-red" href="tel:1930" style="text-decoration:none">
+          <div class="help-icon">🚔</div>
+          <div class="help-num">1930</div>
+          <div class="help-name">Cyber Crime Helpline</div>
+          <div class="help-sub">National — 24/7 — Free</div>
+        </a>
+        <a class="help-card hc-blue" href="tel:14448" style="text-decoration:none">
+          <div class="help-icon">🏦</div>
+          <div class="help-num">14448</div>
+          <div class="help-name">RBI Helpline</div>
+          <div class="help-sub">Banking complaints — Free</div>
+        </a>
+        <a class="help-card hc-teal" href="https://cybercrime.gov.in" target="_blank" style="text-decoration:none">
+          <div class="help-icon">🌐</div>
+          <div class="help-num" style="font-size:18px;margin-top:8px">cybercrime.gov.in</div>
+          <div class="help-name">Online FIR Portal</div>
+          <div class="help-sub">File complaint anytime</div>
+        </a>
+        <a class="help-card hc-amber" href="https://cms.rbi.org.in" target="_blank" style="text-decoration:none">
+          <div class="help-icon">🏛</div>
+          <div class="help-num" style="font-size:18px;margin-top:8px">cms.rbi.org.in</div>
+          <div class="help-name">RBI Ombudsman</div>
+          <div class="help-sub">Escalate bank disputes</div>
+        </a>
+      </div>
+    </div>
+  </section>
+  <section class="glossary-section">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:0">
+        <div class="tag tag-blue" style="margin:0 auto 16px">Fraud Glossary</div>
+        <h2 class="h2" style="margin-bottom:12px">Know the language.<br>Understand the threat.</h2>
+        <p class="lead" style="max-width:480px;margin:0 auto">Fraud jargon explained in plain, simple language every Indian can understand.</p>
+      </div>
+      <div class="glos-grid" id="glosGrid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PAGE: FAQ
+================================================================ -->
+<div class="page" id="page-faq">
+  <div class="page-hero">
+    <div class="page-hero-inner container">
+      <div class="tag tag-amber" style="margin:0 auto 16px">FAQ</div>
+      <h1 class="h1">Questions we get<br>asked every day</h1>
+      <p>Quick, honest answers to the most common Haki questions. More questions? Chat with us on WhatsApp.</p>
+    </div>
+  </div>
+  <section class="faq-section">
+    <div class="container">
+      <div class="faq-wrap">
+        <div class="faq-sidebar">
+          <h2 class="h2" style="margin-bottom:14px">Still have<br>questions?</h2>
+          <p>Our fraud experts respond within 2 hours on WhatsApp. Or join 40,000+ community members helping each other stay safe across India.</p>
+          <div class="faq-cta-box">
+            <h4>Chat with Haki</h4>
+            <p>Get instant answers on WhatsApp in your preferred language — Hindi, English, Tamil, Telugu, and 5 more.</p>
+            <button class="wa-btn">💬 Ask on WhatsApp</button>
+          </div>
+        </div>
+        <div class="faq-list" id="faqList"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     FOOTER (shown on all pages)
+================================================================ -->
+<footer id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="fl-mark">H</div>
+          <div class="fl-name">Haki India</div>
+        </div>
+        <div class="footer-desc">India's first B2C payment fraud detection, guidance, and recovery platform — built for the 350 million Indians transacting on UPI every day.</div>
+        <div class="footer-badge">DPDP Compliant — Privacy First</div>
+      </div>
+      <div class="footer-col">
+        <h4>Protect</h4>
+        <a onclick="showPage('checker')">Check UPI ID</a>
+        <a onclick="showPage('fraud')">Fraud Types</a>
+        <a onclick="showPage('insights')">Market Data</a>
+        <a onclick="showPage('quiz')">Fraud IQ Quiz</a>
+      </div>
+      <div class="footer-col">
+        <h4>Recover</h4>
+        <a onclick="showPage('recovery')">Recovery Guide</a>
+        <a href="tel:1930">Call 1930</a>
+        <a href="https://cybercrime.gov.in" target="_blank">File Online FIR</a>
+        <a onclick="showPage('resources')">All Resources</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a onclick="showPage('home')">About Haki</a>
+        <a onclick="showPage('insights')">Our Research</a>
+        <a onclick="showPage('faq')">FAQ</a>
+        <a>Privacy Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">2025 Haki India. All rights reserved.</div>
+      <div class="footer-disc">Haki provides educational information and fraud awareness tools. UPI risk scores are indicative only. Haki Shield insurance is underwritten by a licensed insurer. Always verify through official channels.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ================================================================
+     JAVASCRIPT
+================================================================ -->
+<script>
+/* ----------------------------------------------------------------
+   PAGE ROUTER
+---------------------------------------------------------------- */
+var currentPage = 'home';
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  var el = document.getElementById('page-' + id);
+  if (el) {
+    el.classList.add('active');
+    currentPage = id;
+  }
+  document.querySelectorAll('.nav-link').forEach(function(l){ l.classList.remove('active'); });
+  var nl = document.getElementById('nl-' + id);
+  if (nl) nl.classList.add('active');
+  document.querySelectorAll('.mob-link').forEach(function(l){ l.classList.remove('active'); });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (id === 'insights') animateBars();
+  if (id === 'fraud') renderFraudTab('upi');
+  if (id === 'resources') { renderResources(); renderGlossary(); }
+  if (id === 'faq') renderFAQ();
+  if (id === 'quiz') initQuiz();
+}
+
+/* ----------------------------------------------------------------
+   MOBILE NAV
+---------------------------------------------------------------- */
+function toggleMobileNav() {
+  var mn = document.getElementById('mobileNav');
+  mn.classList.toggle('open');
+}
+function closeMobileNav() {
+  document.getElementById('mobileNav').classList.remove('open');
+}
+
+/* ----------------------------------------------------------------
+   TICKER
+---------------------------------------------------------------- */
+var tickerItems = [
+  'NEW SCAM: Fake courier arrest calls surge 40% this month',
+  '4,200 UPI collect scams reported this week across India',
+  'Rs.22,842 Cr lost to digital fraud in 2024 — 206% increase',
+  'Check any UPI ID free at Haki — instant AI risk score',
+  'TIP: Receiving money via UPI NEVER requires your PIN',
+  'Investment scam WhatsApp groups targeting IT professionals in Bengaluru',
+  'Fake KYC messages impersonating HDFC, SBI, Axis Bank spiking',
+  'TIP: Enable UPI collect request block in your payment app settings',
+  '3,200 Haki users protected from fraud this week'
+];
+
+(function buildTicker(){
+  var el = document.getElementById('tickerInner');
+  if (!el) return;
+  var doubled = tickerItems.concat(tickerItems);
+  el.innerHTML = doubled.map(function(t){
+    return '<span class="ticker-item"><span class="ticker-sep"></span>' + t + '</span>';
+  }).join('');
+})();
+
+/* ----------------------------------------------------------------
+   HERO PHONE ANIMATION
+---------------------------------------------------------------- */
+setTimeout(function(){
+  var bar = document.getElementById('heroRiskBar');
+  if (bar) bar.style.width = '92%';
+}, 1200);
+
+/* ----------------------------------------------------------------
+   CTA EMAIL
+---------------------------------------------------------------- */
+function handleCtaSubmit() {
+  var inp = document.getElementById('ctaEmail');
+  var btn = document.querySelector('.cta-email-btn');
+  if (inp && inp.value && btn) {
+    btn.textContent = 'You are on the list!';
+    btn.style.background = '#059669';
+    inp.value = '';
+    setTimeout(function(){ btn.textContent = 'Get Early Access'; btn.style.background = ''; }, 3000);
+  }
+}
+
+/* ----------------------------------------------------------------
+   FRAUD TYPES
+---------------------------------------------------------------- */
+var fraudData = {
+  upi: {
+    icon: '📲', iconBg: '#FEE2E2',
+    title: 'UPI Collect Request Scam',
+    sub: 'Most common fraud in India — 40% of all UPI fraud cases',
+    scenario: 'Raju, a kirana store owner in Pune, posted his UPI QR code online to sell old furniture. A "buyer" called, said he would pay via UPI collect request. Raju received a request notification and approved it — losing Rs.45,000 instantly. The request was for payment FROM Raju, not TO him.',
+    flags: [
+      'Someone asks you to approve a UPI request to receive money',
+      'Urgent language: "Accept now or the payment will expire"',
+      'The UPI ID was created very recently — days or weeks ago',
+      'Unknown caller or buyer who contacted you first',
+      'Request amount is unusually high or oddly specific'
+    ],
+    stats: [{ val: '40%', desc: 'of all UPI fraud cases involve collect request manipulation. Average victim loss: Rs.38,000', bg: 'lred', col: 'red' }, { val: '1 in 3', desc: 'small merchants in Tier 2-3 cities have encountered this scam in the last two years', bg: 'lamber', col: 'amber' }],
+    steps: ['Golden Rule: Approving a UPI request means you SEND money. Always.', 'To receive money, share your UPI ID. Never approve anything.', 'Check the VPA before accepting any request via Haki.', 'Block unknown UPI collect requests in your UPI app settings.']
+  },
+  otp: {
+    icon: '🔐', iconBg: '#FEF3C7',
+    title: 'OTP / SIM Swap Fraud',
+    sub: 'Targets elderly users and new digital converts — 32% of all cases',
+    scenario: 'Sunita, 62, received a call from someone claiming to be from her bank KYC department. They said her account would be blocked unless she shared a one-time OTP for "verification." She shared the OTP — and Rs.1.2 lakh was transferred out within seconds. No bank ever asks for OTPs on calls.',
+    flags: [
+      'Any call asking you to share an OTP for ANY reason whatsoever',
+      'Caller claims to be from your bank, RBI, government, or NPCI',
+      'Your account will be blocked or deactivated urgency pressure',
+      'Request to install a screen-sharing app like AnyDesk or TeamViewer',
+      'Your phone suddenly shows No Network — SIM swap may be active'
+    ],
+    stats: [{ val: '68%', desc: 'of OTP fraud victims are above age 45 — primarily new digital banking users who lack fraud awareness', bg: 'lred', col: 'red' }, { val: '0', desc: 'Banks, RBI, or any official body will NEVER ask for your OTP. Zero exceptions. Ever.', bg: 'lteal', col: 'teal' }],
+    steps: ['Absolute rule: OTP is One Time, for YOU only. Share with no one.', 'Hang up immediately on anyone requesting OTP. Then report to 1930.', 'Enable SIM lock with your telecom provider to prevent SIM swaps.', 'Use Haki number-check before responding to any financial calls.']
+  },
+  qr: {
+    icon: '📷', iconBg: '#EDE9FE',
+    title: 'QR Code Debit Fraud',
+    sub: 'Rising rapidly — targeting merchants and online sellers across India',
+    scenario: 'Priya listed her old laptop on OLX for Rs.25,000. A buyer WhatsApp-ed her a QR code saying "scan this to receive payment." She scanned it and entered her UPI PIN — and sent Rs.25,000 instead of receiving it. She scanned a debit QR, not a credit one.',
+    flags: [
+      'Anyone sends you a QR code for you to scan to receive money',
+      'A QR code that asks for your UPI PIN — receiving never needs PIN',
+      'Unknown buyer or seller relationship — never met in person',
+      'Pressure to scan and confirm immediately before the offer expires',
+      'QR code was sent via WhatsApp by a stranger you met online'
+    ],
+    stats: [{ val: '0', desc: 'times you will ever need to enter your UPI PIN to RECEIVE money. Zero. Never. Under any circumstance.', bg: 'lred', col: 'red' }, { val: '62%', desc: 'of QR fraud victims are marketplace sellers on OLX, Quikr, or Facebook Marketplace', bg: 'lamber', col: 'amber' }],
+    steps: ['Never scan a QR sent by someone — only scan QR codes you find in person.', 'If you are selling, share your UPI ID in text. The buyer pays by entering your ID.', 'Receiving money = NO PIN needed. If asked for PIN, STOP immediately.', 'Report the WhatsApp number to Haki before warning others.']
+  },
+  invest: {
+    icon: '📈', iconBg: '#D1FAE5',
+    title: 'Fake Investment / Trading Scam',
+    sub: 'Highest average loss — Rs.3.2 lakh per victim across India',
+    scenario: 'Vikram, a 34-year-old IT professional, was added to a WhatsApp group called "Pro Traders India." Members shared screenshots of massive profits. An "expert" guided him to invest on a fake trading app. After investing Rs.4.5 lakh and seeing profits on screen, he tried to withdraw — the app disappeared overnight.',
+    flags: [
+      'WhatsApp or Telegram group promising guaranteed high returns',
+      'Trading app not listed on Google Play Store or App Store',
+      'Celebrity endorsed investments — Shark Tank, Mukesh Ambani, etc.',
+      'You can see profits on screen but cannot actually withdraw them',
+      'Asked to pay tax or processing fees to unlock your withdrawal'
+    ],
+    stats: [{ val: 'Rs.3.2L', desc: 'average loss per investment fraud victim — the highest of any fraud category in India by far', bg: 'lred', col: 'red' }, { val: '100%', desc: 'of legitimate investments allow you to withdraw without paying fees first. Always test withdrawal first.', bg: 'lgreen', col: 'emerald' }],
+    steps: ['Only use SEBI-registered trading platforms. Check at sebi.gov.in.', 'No legitimate investment guarantees returns. If it sounds too good — it is.', 'Never invest from a WhatsApp group recommendation. Ever.', 'Test withdrawal of a small amount before investing large sums.']
+  },
+  imperson: {
+    icon: '👤', iconBg: '#FEE2E2',
+    title: 'Impersonation Fraud',
+    sub: 'Government, bank, army officer, family — any identity can be faked',
+    scenario: 'Meena received a call from "Cyber Crime Department, Delhi Police." The caller said her Aadhaar was linked to money laundering and she would be arrested unless she transferred Rs.2 lakh as "bail security." In panic, she transferred the money. Police never call to demand money.',
+    flags: [
+      'Government, police, or court demanding money over the phone',
+      'Digital arrest threats — this concept does not legally exist in India',
+      'Family member in emergency needing money urgently via WhatsApp call',
+      'Bank employee calling to update KYC by sending money',
+      'Any call creating urgency + fear + request for immediate money transfer'
+    ],
+    stats: [{ val: '0', desc: 'Digital arrests are FAKE. There is no such legal provision in India. Hang up on any such call immediately.', bg: 'lred', col: 'red' }, { val: '100%', desc: 'of calls demanding immediate payment to avoid arrest are scams. Real courts serve written notices in person.', bg: 'lteal', col: 'teal' }],
+    steps: ['Call back on official numbers to verify any official caller identity.', 'Real police and courts serve notices in person — never demand money on calls.', 'Family emergency calls: verify by calling the actual family member directly.', 'Digital arrest is legally impossible in India. Hang up. Report to 1930.']
+  }
+};
+
+var activeFraudTab = 'upi';
+function showFraudTab(tab, btn) {
+  activeFraudTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  renderFraudTab(tab);
+}
+
+function renderFraudTab(tab) {
+  var d = fraudData[tab];
+  if (!d) return;
+  var bgMap = { lred: 'var(--lred)', lteal: 'var(--lteal)', lamber: 'var(--lamber)', lgreen: 'var(--lgreen)', lamber: 'var(--lamber)' };
+  var colMap = { red: 'var(--red)', teal: 'var(--teal)', amber: 'var(--amber)', emerald: 'var(--emerald)' };
+
+  var statsHtml = d.stats.map(function(s){
+    var bg = s.bg === 'lred' ? 'var(--lred)' : s.bg === 'lteal' ? 'var(--lteal)' : s.bg === 'lamber' ? 'var(--lamber)' : s.bg === 'lgreen' ? 'var(--lgreen)' : 'var(--lred)';
+    var col = colMap[s.col] || 'var(--red)';
+    return '<div class="big-stat" style="background:' + bg + ';margin-bottom:10px"><div class="num" style="color:' + col + '">' + s.val + '</div><div class="desc">' + s.desc + '</div></div>';
+  }).join('');
+
+  var stepsHtml = d.steps.map(function(step, i){
+    return '<div class="pstep"><div class="pstep-n">' + (i+1) + '</div><div class="pstep-t">' + step + '</div></div>';
+  }).join('');
+
+  var flagsHtml = d.flags.map(function(f){
+    return '<div class="flag"><div class="flag-dot">!</div><div>' + f + '</div></div>';
+  }).join('');
+
+  var html = '<div class="tab-panel active" style="display:grid;grid-template-columns:1fr 1fr;gap:36px">' +
+    '<div class="fraud-story-card">' +
+      '<div class="fsc-head">' +
+        '<div class="fsc-icon" style="background:' + d.iconBg + '">' + d.icon + '</div>' +
+        '<div><div class="fsc-title">' + d.title + '</div><div class="fsc-sub">' + d.sub + '</div></div>' +
+      '</div>' +
+      '<div class="scenario-box"><strong>Real scenario:</strong> ' + d.scenario + '</div>' +
+      '<div class="red-flags"><h4>🚩 Red Flags to Watch For</h4>' + flagsHtml + '</div>' +
+    '</div>' +
+    '<div class="fraud-info-side">' +
+      '<div class="info-block"><h4>📊 The Scale of This Scam</h4>' + statsHtml + '</div>' +
+      '<div class="info-block"><h4>🛡 How to Stay Safe</h4><div class="protect-steps">' + stepsHtml + '</div></div>' +
+    '</div>' +
+    '</div>';
+  document.getElementById('fraudTabContent').innerHTML = html;
+}
+
+/* ----------------------------------------------------------------
+   VPA CHECKER
+---------------------------------------------------------------- */
+var vpaProfiles = {
+  safe: {
+    type: 'safe',
+    verdict: 'LOW RISK — Likely Safe',
+    detail: 'This VPA has a verified transaction history of 18+ months with 840+ successful transactions and no community fraud reports. Standard precautions still apply when paying new amounts.',
+    bars: [{ w: '92%', c: 'var(--emerald)', p: '92%' }, { w: '88%', c: 'var(--emerald)', p: '88%' }, { w: '96%', c: 'var(--emerald)', p: '96%' }, { w: '90%', c: 'var(--emerald)', p: '90%' }],
+    tips: ['Always confirm the payee name matches who you expect to pay', 'Keep amounts within your comfort zone for new payees', 'Save trusted VPAs in your contacts for future reference']
+  },
+  warn: {
+    type: 'warn',
+    verdict: 'MEDIUM RISK — Proceed Carefully',
+    detail: 'This VPA was created 45 days ago with limited transaction history. While not flagged for fraud, its newness and low activity warrants caution. Verify the identity through another channel before paying.',
+    bars: [{ w: '35%', c: 'var(--amber)', p: '35%' }, { w: '28%', c: 'var(--amber)', p: '28%' }, { w: '95%', c: 'var(--emerald)', p: '95%' }, { w: '62%', c: 'var(--amber)', p: '62%' }],
+    tips: ['Call the person directly to verify before paying', 'Start with a small test amount such as Rs.1 to confirm receipt', 'Do not pay in advance without verifying the product or service']
+  },
+  danger: {
+    type: 'danger',
+    verdict: 'HIGH RISK — DO NOT PAY',
+    detail: 'ALERT: This VPA has been flagged in 14 fraud reports by other users. It matches patterns associated with lottery and refund scams. This VPA is 8 days old with zero legitimate transactions.',
+    bars: [{ w: '5%', c: 'var(--red)', p: '5%' }, { w: '3%', c: 'var(--red)', p: '3%' }, { w: '92%', c: 'var(--red)', p: '92%' }, { w: '95%', c: 'var(--red)', p: '95%' }],
+    tips: ['DO NOT send any money to this VPA under any circumstances', 'Report this VPA using the Haki community registry', 'If you already paid, call 1930 immediately']
+  }
+};
+
+function fillAndCheck(vpa) {
+  var inp = document.getElementById('vpaInput');
+  if (inp) {
+    inp.value = vpa;
+    checkVPA();
+  }
+}
+
+function checkVPA() {
+  var inp = document.getElementById('vpaInput');
+  if (!inp) return;
+  var val = inp.value.trim().toLowerCase();
+  if (!val) { inp.style.borderColor = 'var(--red)'; setTimeout(function(){ inp.style.borderColor = ''; }, 1500); return; }
+
+  var profile;
+  if (val.indexOf('prize') !== -1 || val.indexOf('winner') !== -1 || val.indexOf('lucky') !== -1 || val.indexOf('free') !== -1 || val.indexOf('offer') !== -1 || val.indexOf('fraud') !== -1 || val.indexOf('scam') !== -1) {
+    profile = vpaProfiles.danger;
+  } else if (val.indexOf('new') !== -1 || val.length < 5 || val.indexOf('123') !== -1) {
+    profile = vpaProfiles.warn;
+  } else {
+    var r = Math.random();
+    profile = r < 0.6 ? vpaProfiles.safe : r < 0.85 ? vpaProfiles.warn : vpaProfiles.danger;
+  }
+
+  var box   = document.getElementById('resultBox');
+  var card  = document.getElementById('resultCard');
+  var icon  = document.getElementById('resultIcon');
+  var verd  = document.getElementById('resultVerdict');
+  var det   = document.getElementById('resultDetail');
+  var tipsEl= document.getElementById('resultTips');
+
+  box.classList.add('show');
+  card.className = 'result-card-inner ri-' + profile.type;
+  icon.textContent = profile.type === 'safe' ? '✅' : profile.type === 'warn' ? '⚠️' : '🚨';
+  verd.textContent = profile.verdict;
+  det.textContent  = profile.detail;
+
+  profile.bars.forEach(function(b, i){
+    var barEl = document.getElementById('rsBar' + (i+1));
+    var pctEl = document.getElementById('rsPct' + (i+1));
+    if (barEl) { barEl.style.background = b.c; barEl.style.width = '0'; setTimeout(function(){ barEl.style.width = b.w; }, 100 + i * 80); }
+    if (pctEl) pctEl.textContent = b.p;
+  });
+
+  tipsEl.innerHTML = profile.tips.map(function(t){ return '<div class="tip-row"><span class="tip-arrow">→</span>' + t + '</div>'; }).join('');
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/* ----------------------------------------------------------------
+   BAR CHART (INSIGHTS)
+---------------------------------------------------------------- */
+var chartBuilt = false;
+var barData = [
+  { yr: '2019', pct: 12, amt: 'Rs.2,100 Cr' },
+  { yr: '2020', pct: 18, amt: 'Rs.3,200 Cr' },
+  { yr: '2021', pct: 26, amt: 'Rs.4,800 Cr' },
+  { yr: '2022', pct: 38, amt: 'Rs.7,100 Cr' },
+  { yr: '2023', pct: 52, amt: 'Rs.10,400 Cr' },
+  { yr: '2024', pct: 100, amt: 'Rs.22,842 Cr' }
+];
+
+function buildBarChart() {
+  var el = document.getElementById('insBarChart');
+  if (!el) return;
+  el.innerHTML = barData.map(function(d){
+    return '<div class="bc-row">' +
+      '<div class="bc-yr">' + d.yr + '</div>' +
+      '<div class="bc-track"><div class="bc-fill" data-w="' + d.pct + '" style="width:0%"><span class="bc-val">' + d.yr + '</span></div></div>' +
+      '<div class="bc-amt">' + d.amt + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function animateBars() {
+  buildBarChart();
+  setTimeout(function(){
+    document.querySelectorAll('.bc-fill').forEach(function(bar, i){
+      var w = bar.getAttribute('data-w');
+      setTimeout(function(){ bar.style.width = w + '%'; }, i * 120);
+    });
+  }, 200);
+}
+
+/* ----------------------------------------------------------------
+   QUIZ
+---------------------------------------------------------------- */
+var quizQuestions = [
+  {
+    q: 'A buyer on OLX sends you a UPI collect request to pay you Rs.20,000 for your old phone. What should you do?',
+    scenario: 'You are selling your old Samsung phone online and have found a buyer.',
+    opts: ['Approve the collect request — that is how he pays you', 'Never approve UPI collect requests. To receive money, share your UPI ID only.', 'Enter your PIN to confirm the payment receipt', 'Ask for a screenshot of his payment confirmation first'],
+    correct: 1,
+    feedback: 'Correct! Approving a UPI collect request means YOU are SENDING money. To receive money, simply share your UPI ID. The buyer enters your UPI ID on their end. Never approve collect requests from strangers.'
+  },
+  {
+    q: 'Someone calling from "SBI Cybercrime Department" says your account is involved in fraud and asks for your OTP to verify your identity. What do you do?',
+    scenario: 'The caller sounds official and knows your account number and last transaction.',
+    opts: ['Share the OTP since they are from the bank', 'Hang up and call back on the official SBI number found on your bank card', 'Share the first 3 digits only to partially verify', 'Ask them to come to your branch instead'],
+    correct: 1,
+    feedback: 'Correct! No bank, RBI, or government official will EVER ask for your OTP. Hang up immediately. Then call back on the official bank number on the back of your card to check if there is a real concern.'
+  },
+  {
+    q: 'You receive a WhatsApp message: "Your bank KYC has expired! Your account will be blocked in 24 hours. Update now: [link]". What do you do?',
+    scenario: 'The message looks exactly like it is from your bank with their official logo.',
+    opts: ['Click the link and update your KYC to avoid account blocking', 'Forward it to family to warn them', 'Delete it and call your bank directly on the number on your card', 'Reply asking for more details'],
+    correct: 2,
+    feedback: 'Correct! This is a classic phishing scam. Banks never send KYC update links via WhatsApp. Always call your bank using the number on the back of your card or their official website. Never click links in unsolicited messages.'
+  },
+  {
+    q: 'Someone sends you a QR code via WhatsApp saying "Scan this to receive your Rs.5,000 cashback." You scan it and your UPI app asks you to Enter PIN. What does this mean?',
+    scenario: 'You have been waiting for a cashback from a recent online purchase.',
+    opts: ['Enter the PIN — it is needed to accept incoming money', 'STOP! Entering PIN here means you are SENDING Rs.5,000, not receiving it', 'This is normal — PIN is always needed for UPI transactions', 'Enter PIN but change your password afterwards'],
+    correct: 1,
+    feedback: 'Correct! This is the QR code debit scam. Receiving money via UPI NEVER requires your PIN. If you are asked for a PIN after scanning a QR someone sent you, it means you are SENDING money. Stop immediately.'
+  },
+  {
+    q: 'A WhatsApp message says you have won Rs.50,000 in an Airtel lucky draw. To claim it, pay Rs.500 as processing fees. What is this?',
+    scenario: 'The message looks official with the company logo and a certificate image attached.',
+    opts: ['A legitimate prize — pay the fees to claim it', 'Pay only if the prize is more than ten times the fee amount', 'A 100% scam — no legitimate prize requires advance fees to claim it', 'Ask for bank account details to transfer the prize instead'],
+    correct: 2,
+    feedback: 'Correct! This is the classic advance fee fraud pattern. Any prize or lottery that requires you to pay a fee to claim it is 100% a scam. Legitimate prizes never require upfront payment. Airtel does not run UPI lottery schemes.'
+  }
+];
+
+var qIdx = 0, qScore = 0, qAnswered = false;
+
+function initQuiz() {
+  qIdx = 0; qScore = 0; qAnswered = false;
+  document.getElementById('quizBody').style.display = 'block';
+  document.getElementById('quizResult').className = 'quiz-result';
+  buildProgress();
+  renderQuestion();
+}
+
+function buildProgress() {
+  var el = document.getElementById('quizProgressBar');
+  if (!el) return;
+  el.innerHTML = quizQuestions.map(function(q, i){
+    return '<div class="qpb" id="qpb' + i + '"></div>';
+  }).join('');
+  updateProgress();
+}
+
+function updateProgress() {
+  quizQuestions.forEach(function(q, i){
+    var dot = document.getElementById('qpb' + i);
+    if (!dot) return;
+    dot.className = 'qpb' + (i < qIdx ? ' done' : i === qIdx ? ' current' : '');
+  });
+}
+
+function renderQuestion() {
+  var q = quizQuestions[qIdx];
+  var meta = document.getElementById('qcMeta');
+  var qEl  = document.getElementById('qcQ');
+  var scEl = document.getElementById('qcScenario');
+  var opts = document.getElementById('qcOptions');
+  var fb   = document.getElementById('qcFeedback');
+  var cnt  = document.getElementById('qcCount');
+  var nxt  = document.getElementById('qcNextBtn');
+  if (!q || !meta) return;
+  meta.textContent = 'Question ' + (qIdx + 1) + ' of ' + quizQuestions.length;
+  qEl.textContent  = q.q;
+  scEl.textContent = 'Scenario: ' + q.scenario;
+  cnt.textContent  = (qIdx + 1) + ' / ' + quizQuestions.length;
+  fb.className  = 'qc-feedback';
+  fb.textContent = '';
+  nxt.className = 'qc-next-btn';
+  qAnswered = false;
+  opts.innerHTML = q.opts.map(function(o, i){
+    return '<button class="qc-opt" onclick="answerQ(' + i + ')">' + o + '</button>';
+  }).join('');
+  updateProgress();
+}
+
+function answerQ(idx) {
+  if (qAnswered) return;
+  qAnswered = true;
+  var q   = quizQuestions[qIdx];
+  var opts = document.querySelectorAll('.qc-opt');
+  var fb   = document.getElementById('qcFeedback');
+  var nxt  = document.getElementById('qcNextBtn');
+  opts.forEach(function(o, i){
+    o.classList.add('locked');
+    if (i === q.correct) o.classList.add('correct');
+    else if (i === idx && idx !== q.correct) o.classList.add('wrong');
+  });
+  var correct = idx === q.correct;
+  if (correct) qScore++;
+  fb.textContent = (correct ? '✅ ' : '❌ ') + q.feedback;
+  fb.className = 'qc-feedback qcf-show ' + (correct ? 'qcf-correct' : 'qcf-wrong');
+  nxt.className = 'qc-next-btn show';
+  nxt.textContent = qIdx === quizQuestions.length - 1 ? 'See My Score →' : 'Next Question →';
+}
+
+function nextQ() {
+  qIdx++;
+  if (qIdx >= quizQuestions.length) { showResult(); return; }
+  renderQuestion();
+}
+
+function showResult() {
+  document.getElementById('quizBody').style.display = 'none';
+  var r = document.getElementById('quizResult');
+  r.className = 'quiz-result show';
+  document.getElementById('qrScore').innerHTML = '<span>' + qScore + '</span>/' + quizQuestions.length;
+  var labels = ['Very High Risk — You Need Protection Now', 'Below Average — Learn More', 'Average Awareness', 'Good — Stay Sharp!', 'Excellent! You Are Fraud-Smart!'];
+  var tips = [
+    'You are highly vulnerable to fraud. Read all fraud types and bookmark this page. Consider Haki Shield for financial protection.',
+    'You know some basics but have gaps. Review the fraud types section carefully — especially UPI collect and OTP fraud.',
+    'Good start. A few key concepts need reinforcing. The most dangerous scams often fool smart people.',
+    'Well done! You clearly understand fraud basics. Keep checking scam alerts to stay updated on new patterns.',
+    'Outstanding! Share Haki with your family — especially parents and grandparents who may be more vulnerable.'
+  ];
+  document.getElementById('qrLabel').textContent = labels[qScore] || labels[0];
+  document.getElementById('qrTip').textContent   = tips[qScore]   || tips[0];
+}
+
+function resetQuiz() { initQuiz(); }
+
+/* ----------------------------------------------------------------
+   RESOURCES
+---------------------------------------------------------------- */
+var resourcesData = [
+  { icon: '📋', iconBg: 'var(--ice)', tag: 'TEMPLATE', tagColor: 'var(--blue)', title: 'Bank Fraud Complaint Letter', desc: 'Ready-to-send complaint template for all major Indian banks. Fills in your details automatically. Available in English and Hindi.', link: '#' },
+  { icon: '🚔', iconBg: 'var(--lteal)', tag: 'GUIDE', tagColor: 'var(--teal)', title: 'How to File an FIR for Cyber Fraud', desc: 'Step-by-step guide with sample wording for filing at your police station cybercrime cell. Covers what to bring and what to say.', link: '#' },
+  { icon: '👨‍👩‍👧', iconBg: '#EDE9FE', tag: 'GUIDE', tagColor: '#7C3AED', title: 'Protect Your Parents from Fraud', desc: 'Simple illustrated guide for elderly family members. Available in Hindi, Tamil, and Telugu. Share in your family WhatsApp group.', link: '#' },
+  { icon: '🗂', iconBg: 'var(--lrose)', tag: 'CHECKLIST', tagColor: 'var(--rose)', title: 'Complete Fraud Case Tracker', desc: 'Track your complaint across bank, police, and RBI ombudsman. Includes deadlines, follow-up reminders, and escalation triggers.', link: '#' },
+  { icon: '📱', iconBg: 'var(--lamber)', tag: 'INFOGRAPHIC', tagColor: 'var(--amber)', title: 'UPI Safety — 10 Golden Rules', desc: 'Shareable infographic for WhatsApp. Post in your family groups and RWA communities. Save lives with one simple share.', link: '#' },
+  { icon: '📞', iconBg: 'var(--lgreen)', tag: 'DIRECTORY', tagColor: 'var(--emerald)', title: 'All Fraud Helplines India 2025', desc: 'Every bank fraud helpline, 1930 cybercrime, RBI, NPCI, and all state police cyber cells in one easy-to-use PDF.', link: '#' }
+];
+
+function renderResources() {
+  var el = document.getElementById('resourceGrid');
+  if (!el) return;
+  el.innerHTML = resourcesData.map(function(r){
+    return '<div class="resource-card">' +
+      '<div class="rc-icon" style="background:' + r.iconBg + '">' + r.icon + '</div>' +
+      '<div class="rc-tag" style="color:' + r.tagColor + '">' + r.tag + '</div>' +
+      '<div class="rc-title">' + r.title + '</div>' +
+      '<div class="rc-desc">' + r.desc + '</div>' +
+      '<div class="rc-link">Download Free &rarr;</div>' +
+      '</div>';
+  }).join('');
+}
+
+/* ----------------------------------------------------------------
+   GLOSSARY
+---------------------------------------------------------------- */
+var glossaryData = [
+  { term: 'UPI (Unified Payments Interface)', def: 'India\'s real-time payment system managed by NPCI. Lets you send and receive money instantly using a Virtual Payment Address like name@upi.' },
+  { term: 'VPA (Virtual Payment Address)', def: 'Your UPI ID — like an email address for money. Example: yourname@okicici. Sharing your VPA is safe; it only lets people send money to you.' },
+  { term: 'UPI Collect Request', def: 'A request for someone to SEND you money via UPI. CRITICAL: Approving a collect request means YOU are paying THEM — not receiving. Never approve from strangers.' },
+  { term: 'OTP (One-Time Password)', def: 'A temporary 6-digit code sent to your phone to verify your identity. Share with NO ONE. No bank or government ever needs your OTP over a call.' },
+  { term: 'SIM Swap Fraud', def: 'A scam where fraudsters convince your mobile carrier to transfer your phone number to their SIM, giving them access to your OTPs and calls.' },
+  { term: 'Phishing', def: 'Fake websites, emails, or SMS messages that look like legitimate banks or services to steal your login credentials, card numbers, or OTPs.' },
+  { term: 'Digital Arrest', def: 'A completely fake concept used by scammers posing as police or government officials. There is no such thing as digital arrest in Indian law. Hang up.' },
+  { term: 'CPFIR', def: 'Citizen Financial Cyber Frauds Reporting and Management System — India\'s official portal to report cyber fraud cases and freeze fraudulent accounts.' },
+  { term: 'RBI Ombudsman', def: 'A free dispute resolution service for banking complaints. If your bank does not resolve your fraud complaint within 30 days, escalate to cms.rbi.org.in.' },
+  { term: 'Mule Account', def: 'A bank account used by fraudsters to receive and quickly transfer stolen money. Victim money often passes through multiple mule accounts before disappearing.' },
+  { term: 'Vishing', def: 'Voice phishing — using phone calls to trick victims into revealing financial information, OTPs, or transferring money under false pretences.' },
+  { term: 'AePS (Aadhaar Enabled Payment System)', def: 'A payment system using Aadhaar biometrics. Fraudsters can steal money using cloned fingerprints if your Aadhaar-bank link is not locked.' }
+];
+
+function renderGlossary() {
+  var el = document.getElementById('glosGrid');
+  if (!el) return;
+  el.innerHTML = glossaryData.map(function(g){
+    return '<div class="glos-item"><div class="glos-term">' + g.term + '</div><div class="glos-def">' + g.def + '</div></div>';
+  }).join('');
+}
+
+/* ----------------------------------------------------------------
+   FAQ
+---------------------------------------------------------------- */
+var faqData = [
+  { q: 'Is Haki free to use?', a: 'Yes — the core UPI checker, scam alerts, fraud education, and WhatsApp bot are completely free forever. Haki Shield insurance and premium features are optional at Rs.99/month.' },
+  { q: 'How does the VPA risk score work?', a: 'Our AI model checks 14 data points including account age, transaction history, community fraud reports, and pattern matching against 40+ known scam templates. Results are delivered in under 2 seconds.' },
+  { q: 'I just got scammed. What do I do right now?', a: 'Step 1: Call your bank immediately to freeze the transaction. Step 2: Dial 1930 (National Cyber Crime Helpline). Step 3: File at cybercrime.gov.in. Time is critical — act within the first hour for the best recovery chance.' },
+  { q: 'Can Haki recover my stolen money?', a: 'We cannot guarantee recovery, but our RecoverRight wizard guides you through every step that maximises your chances — bank complaint, FIR, RBI Ombudsman, and cyber lawyer. Many users have recovered 50-80% of their losses.' },
+  { q: 'Is my personal data safe with Haki?', a: 'Absolutely. We are DPDP Act 2023 compliant. We only store hashed anonymised identifiers — never raw financial data. Your UPI searches are private and never sold to third parties.' },
+  { q: 'Does Haki work on WhatsApp without downloading an app?', a: 'Yes! Save our WhatsApp number and type commands like /check followed by any UPI ID. Works on any phone including feature phones, in 8 Indian languages.' },
+  { q: 'What is Haki Shield fraud insurance?', a: 'An embedded micro-insurance product at Rs.99/month covering up to Rs.50,000 annual fraud loss. Claims are auto-triggered from your fraud report — no paperwork, no branch visits required.' },
+  { q: 'How do I report a scam UPI ID?', a: 'On WhatsApp: type /report followed by the UPI ID. On the app or website: use the Report a VPA button in the checker. Your report immediately helps other Haki users avoid the same fraud.' }
+];
+
+var openFaq = -1;
+function renderFAQ() {
+  var el = document.getElementById('faqList');
+  if (!el) return;
+  el.innerHTML = faqData.map(function(f, i){
+    return '<div class="faq-item" id="fi' + i + '">' +
+      '<div class="faq-q" onclick="toggleFaq(' + i + ')">' +
+        '<div class="faq-q-text">' + f.q + '</div>' +
+        '<div class="faq-arrow">+</div>' +
+      '</div>' +
+      '<div class="faq-a" id="fa' + i + '">' +
+        '<div class="faq-a-inner">' + f.a + '</div>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function toggleFaq(i) {
+  var isOpen = openFaq === i;
+  // Close all
+  faqData.forEach(function(f, j){
+    var item = document.getElementById('fi' + j);
+    var ans  = document.getElementById('fa' + j);
+    if (item && ans) {
+      item.classList.remove('open');
+      ans.style.maxHeight = '0';
+    }
+  });
+  openFaq = -1;
+  // Open selected if was closed
+  if (!isOpen) {
+    var item = document.getElementById('fi' + i);
+    var ans  = document.getElementById('fa' + i);
+    if (item && ans) {
+      item.classList.add('open');
+      ans.style.maxHeight = (ans.scrollHeight + 20) + 'px';
+      openFaq = i;
+    }
+  }
+}
+
+/* ----------------------------------------------------------------
+   NAV SCROLL EFFECT
+---------------------------------------------------------------- */
+window.addEventListener('scroll', function(){
+  var nav = document.getElementById('nav');
+  if (!nav) return;
+  nav.style.boxShadow = window.scrollY > 40 ? '0 2px 20px rgba(0,0,0,.35)' : 'none';
+});
+
+/* ----------------------------------------------------------------
+   INIT
+---------------------------------------------------------------- */
+showPage('home');
+</script>
 </body>
 </html>
